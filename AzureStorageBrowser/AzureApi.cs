@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace AzureStorageBrowser
             return subscriptions.Value;
         }
 
-        public static async Task<AzureResource[]> GetAzureResources(this HttpClient httpClient, string token, string subscriptionId)
+        public static async Task<AzureResource[]> GetStorageResources(this HttpClient httpClient, string token, string subscriptionId)
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -30,6 +31,21 @@ namespace AzureStorageBrowser
             var resources = JsonConvert.DeserializeObject<ResourceContract>(resourcesJson);
 
             return resources.Value;
+        }
+
+        public static async Task<string> GetStorageKey(this HttpClient httpClient, string token, string id)
+        {
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var keysResponse = await httpClient.PostAsync(
+                $"https://management.azure.com/{id}/listKeys?api-version=2017-06-01",
+                new StringContent(""));
+
+            var keysJson = await keysResponse.Content.ReadAsStringAsync();
+
+            var keys = JsonConvert.DeserializeObject<StorageKeyContract>(keysJson);
+
+            return keys.Keys.First().Value;
         }
     }
 
@@ -53,5 +69,15 @@ namespace AzureStorageBrowser
     {
         public string Id { get; set; }
         public string Name { get; set; }
+    }
+
+    public class StorageKeyContract
+    {
+        public StorageKey[] Keys { get; set; }
+    }
+
+    public class StorageKey
+    {
+        public string Value { get; set; }
     }
 }

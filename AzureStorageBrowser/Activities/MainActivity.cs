@@ -100,16 +100,24 @@ namespace AzureStorageBrowser.Activities
 
             var subscriptions = await httpClient.GetSubscriptions(token);
 
-            var resources = new List<AzureResource>();
+            var accounts = new List<Account>();
 
             foreach (var subscription in subscriptions)
             {
-                resources.AddRange(await httpClient.GetAzureResources(token, subscription.SubscriptionId));
+                var resources = await httpClient.GetStorageResources(token, subscription.SubscriptionId);
+                foreach(var resource in resources)
+                {
+                    var key = await httpClient.GetStorageKey(token, resource.Id);
+                    accounts.Add(new Account
+                    {
+                        Name = resource.Name,
+                        Id = resource.Id,
+                        Key = key,
+                    });
+                }
             }
 
-            return resources
-                .Select(x => new Account { Name = x.Name, Id = x.Id })
-                .ToArray();
+            return accounts.ToArray();
         }
     }
 }
