@@ -54,8 +54,8 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f050003
 			public const int accounts = 2131034115;
 			
-			// aapt resource value: 0x7f050008
-			public const int agentWebView = 2131034120;
+			// aapt resource value: 0x7f050009
+			public const int agentWebView = 2131034121;
 			
 			// aapt resource value: 0x7f050001
 			public const int containers = 2131034113;
@@ -74,6 +74,9 @@ namespace AzureStorageBrowser
 			
 			// aapt resource value: 0x7f050007
 			public const int queues = 2131034119;
+			
+			// aapt resource value: 0x7f050008
+			public const int tables = 2131034120;
 			
 			static Id()
 			{
