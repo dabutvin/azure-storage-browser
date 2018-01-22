@@ -11,16 +11,16 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace AzureStorageBrowser
+namespace AzureStorageBrowser.Activities
 {
-    [Activity(Label = "TableActivity")]
-    public class TableActivity : BaseActivity
+    [Activity(Label = "QueueActivity")]
+    public class QueueActivity : BaseActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
-            SetContentView(Resource.Layout.Table);
+            SetContentView(Resource.Layout.Queue);
         }
     }
 }

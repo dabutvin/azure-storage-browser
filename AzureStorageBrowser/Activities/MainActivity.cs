@@ -3,10 +3,14 @@ using Android.Widget;
 using Android.OS;
 using Android.Views;
 using System.Collections.Generic;
-using System;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
-namespace AzureStorageBrowser
+namespace AzureStorageBrowser.Activities
 {
     [Activity(Label = "Azure Storage Browser", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MainActivity : BaseActivity
@@ -18,7 +22,7 @@ namespace AzureStorageBrowser
 
         ListView accountsListView;
 
-        Account[] accounts;
+        Account[] accounts = new Account[0];
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -78,17 +82,20 @@ namespace AzureStorageBrowser
 
         private async Task RefreshAccounts(string token)
         {
-            accounts = await Task.FromResult(new[]
+            var httpClient = new HttpClient();
+
+            var subscriptions = await httpClient.GetSubscriptions(token);
+
+            var resources = new List<AzureResource>();
+
+            foreach (var subscription in subscriptions)
             {
-                new Account
-                {
-                    Name = "abc",
-                },
-                new Account
-                {
-                    Name = "def",
-                },
-            });
+                resources.AddRange(await httpClient.GetAzureResources(token, subscription.SubscriptionId));
+            }
+
+            accounts = resources
+                .Select(x => new Account { Name = x.Name, Id = x.Id })
+                .ToArray();
         }
     }
 }

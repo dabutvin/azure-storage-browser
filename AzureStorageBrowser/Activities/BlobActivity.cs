@@ -11,7 +11,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace AzureStorageBrowser
+namespace AzureStorageBrowser.Activities
 {
     [Activity(Label = "BlobActivity")]
     public class BlobActivity : BaseActivity

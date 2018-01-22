@@ -42,9 +42,4 @@ namespace AzureStorageBrowser
             return view;
         }
     }
-
-    public class Account
-    {
-        public string Name { get; set; }
-    }
 }

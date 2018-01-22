@@ -2,7 +2,7 @@
 using Android.App;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
-namespace AzureStorageBrowser
+namespace AzureStorageBrowser.Activities
 {
     public class BaseActivity : Activity
     {
