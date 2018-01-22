@@ -2,6 +2,9 @@
 using Android.Widget;
 using Android.OS;
 using Android.Views;
+using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 
 namespace AzureStorageBrowser
 {
@@ -12,6 +15,10 @@ namespace AzureStorageBrowser
         Button blobButton;
         Button queueButton;
         Button tableButton;
+
+        ListView accountsListView;
+
+        Account[] accounts;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -24,6 +31,8 @@ namespace AzureStorageBrowser
             queueButton = FindViewById<Button>(Resource.Id.goto_queues);
             tableButton = FindViewById<Button>(Resource.Id.goto_tables);
 
+            accountsListView = FindViewById<ListView>(Resource.Id.accounts);
+
             loginButton.Click += async delegate
             {
                 var token = await this.GetTokenAsync();
@@ -33,6 +42,9 @@ namespace AzureStorageBrowser
                     blobButton.Visibility = ViewStates.Visible;
                     tableButton.Visibility = ViewStates.Visible;
                     queueButton.Visibility = ViewStates.Visible;
+                    await RefreshAccounts(token);
+
+                    accountsListView.Adapter = new AccountsListAdapter(this, accounts);
                 }
             };
 
@@ -50,6 +62,33 @@ namespace AzureStorageBrowser
             {
                 StartActivity(typeof(TableActivity));
             };
+
+            accountsListView.Adapter = new AccountsListAdapter(this, accounts);
+        }
+
+        private Account SelectedAccount()
+        {
+            if (accountsListView.CheckedItemPosition > -1)
+            {
+                return accounts[accountsListView.CheckedItemPosition];
+            }
+
+            return null;
+        }
+
+        private async Task RefreshAccounts(string token)
+        {
+            accounts = await Task.FromResult(new[]
+            {
+                new Account
+                {
+                    Name = "abc",
+                },
+                new Account
+                {
+                    Name = "def",
+                },
+            });
         }
     }
 }

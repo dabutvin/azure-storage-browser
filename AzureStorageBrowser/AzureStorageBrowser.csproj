@@ -58,6 +58,7 @@
     <Compile Include="QueueActivity.cs" />
     <Compile Include="BlobActivity.cs" />
     <Compile Include="TableActivity.cs" />
+    <Compile Include="AccountsListAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

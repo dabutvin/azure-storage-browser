@@ -8,6 +8,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/login" />
+    <ListView
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:choiceMode="singleChoice"
+        android:id="@+id/accounts" />
     <Button
         android:visibility="gone"
         android:id="@+id/goto_blobs"
