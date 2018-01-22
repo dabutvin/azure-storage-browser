@@ -16,4 +16,8 @@
         android:layout_height="wrap_content"
         android:text="Blob Containers"
         style="@android:style/TextAppearance.Material.Headline" />
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/containers" />
 </LinearLayout>

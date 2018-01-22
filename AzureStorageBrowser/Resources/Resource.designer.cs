@@ -51,23 +51,29 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f050000
 			public const int account_label = 2131034112;
 			
-			// aapt resource value: 0x7f050002
-			public const int accounts = 2131034114;
-			
-			// aapt resource value: 0x7f050006
-			public const int agentWebView = 2131034118;
-			
 			// aapt resource value: 0x7f050003
-			public const int goto_blobs = 2131034115;
+			public const int accounts = 2131034115;
 			
-			// aapt resource value: 0x7f050005
-			public const int goto_queues = 2131034117;
-			
-			// aapt resource value: 0x7f050004
-			public const int goto_tables = 2131034116;
+			// aapt resource value: 0x7f050008
+			public const int agentWebView = 2131034120;
 			
 			// aapt resource value: 0x7f050001
-			public const int login = 2131034113;
+			public const int containers = 2131034113;
+			
+			// aapt resource value: 0x7f050004
+			public const int goto_blobs = 2131034116;
+			
+			// aapt resource value: 0x7f050006
+			public const int goto_queues = 2131034118;
+			
+			// aapt resource value: 0x7f050005
+			public const int goto_tables = 2131034117;
+			
+			// aapt resource value: 0x7f050002
+			public const int login = 2131034114;
+			
+			// aapt resource value: 0x7f050007
+			public const int queues = 2131034119;
 			
 			static Id()
 			{

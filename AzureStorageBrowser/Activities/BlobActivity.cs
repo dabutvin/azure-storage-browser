@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Akavache;
 using Android.App;
 using Android.Content;
@@ -36,6 +37,14 @@ namespace AzureStorageBrowser.Activities
 
             blobClient = storageAccount.CreateCloudBlobClient();
 
+            await BindContainersAsync($"{account.Id}/containers");
+            await RefreshContainersAsync($"{account.Id}/containers");
+            await BindContainersAsync($"{account.Id}/containers");
+
+        }
+
+        private async Task RefreshContainersAsync(string id)
+        {
             var containers = new List<string>();
             BlobContinuationToken continuationToken = null;
             do
@@ -43,11 +52,30 @@ namespace AzureStorageBrowser.Activities
                 var containerSegment = await blobClient.ListContainersSegmentedAsync(continuationToken);
 
                 containers.AddRange(containerSegment.Results.Select(x => x.Name));
-
                 continuationToken = containerSegment.ContinuationToken;
+
             } while (continuationToken != null);
 
-            var uiu = "";
+            await BlobCache.LocalMachine.InsertObject(id, containers.ToArray());
+        }
+
+        private async Task BindContainersAsync(string id)
+        {
+            try
+            {
+                var containers = await BlobCache.LocalMachine.GetObject<string[]>(id);
+
+                if (containers != null)
+                {
+                    var containersListView = FindViewById<ListView>(Resource.Id.containers);
+
+                    containersListView.Adapter = new ArrayAdapter<string>(
+                        this,
+                        Android.Resource.Layout.SimpleListItem1,
+                        containers.ToArray());
+                }
+            }
+            catch(KeyNotFoundException){}
         }
     }
 }
