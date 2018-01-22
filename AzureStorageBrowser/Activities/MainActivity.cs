@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reactive.Linq;
 using Newtonsoft.Json;
+using Android.Content;
+using Akavache;
 
 namespace AzureStorageBrowser.Activities
 {
@@ -22,13 +25,13 @@ namespace AzureStorageBrowser.Activities
 
         ListView accountsListView;
 
-        Account[] accounts = new Account[0];
-
-        protected override void OnCreate(Bundle savedInstanceState)
+        protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.Main);
+
+            BlobCache.ApplicationName = nameof(AzureStorageBrowser);
 
             loginButton = FindViewById<Button>(Resource.Id.login);
             blobButton = FindViewById<Button>(Resource.Id.goto_blobs);
@@ -40,13 +43,27 @@ namespace AzureStorageBrowser.Activities
             loginButton.Click += async delegate
             {
                 var token = await this.GetTokenAsync();
+
                 if(token != null)
                 {
                     loginButton.Visibility = ViewStates.Gone;
                     blobButton.Visibility = ViewStates.Visible;
                     tableButton.Visibility = ViewStates.Visible;
                     queueButton.Visibility = ViewStates.Visible;
-                    await RefreshAccounts(token);
+
+                    try
+                    {
+                        var cachedAccounts = await BlobCache.LocalMachine.GetObject<Account[]>("accounts");
+                        if (cachedAccounts != null)
+                        {
+                            accountsListView.Adapter = new AccountsListAdapter(this, cachedAccounts);
+                        }
+                    }
+                    catch (KeyNotFoundException) { }
+
+                    var accounts = await FetchAccounts(token);
+
+                    await BlobCache.LocalMachine.InsertObject("accounts", accounts);
 
                     accountsListView.Adapter = new AccountsListAdapter(this, accounts);
                 }
@@ -67,20 +84,17 @@ namespace AzureStorageBrowser.Activities
                 StartActivity(typeof(TableActivity));
             };
 
-            accountsListView.Adapter = new AccountsListAdapter(this, accounts);
-        }
-
-        private Account SelectedAccount()
-        {
-            if (accountsListView.CheckedItemPosition > -1)
+            accountsListView.ItemClick += async delegate
             {
-                return accounts[accountsListView.CheckedItemPosition];
-            }
+                var cachedAccounts = await BlobCache.LocalMachine.GetObject<Account[]>("accounts");
 
-            return null;
+                await BlobCache.LocalMachine.InsertObject(
+                    "selectedAccount",
+                    cachedAccounts[accountsListView.CheckedItemPosition]);
+            };
         }
 
-        private async Task RefreshAccounts(string token)
+        private async Task<Account[]> FetchAccounts(string token)
         {
             var httpClient = new HttpClient();
 
@@ -93,7 +107,7 @@ namespace AzureStorageBrowser.Activities
                 resources.AddRange(await httpClient.GetAzureResources(token, subscription.SubscriptionId));
             }
 
-            accounts = resources
+            return resources
                 .Select(x => new Account { Name = x.Name, Id = x.Id })
                 .ToArray();
         }

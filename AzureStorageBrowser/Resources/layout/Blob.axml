@@ -8,6 +8,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/account_label"
+        android:textAlignment="textEnd" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Blob Containers"
         style="@android:style/TextAppearance.Material.Headline" />
 </LinearLayout>
