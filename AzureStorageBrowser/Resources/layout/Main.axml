@@ -1,4 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
-	<Button android:id="@+id/myButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/hello" />
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login" />
+    <Button
+        android:visibility="gone"
+        android:id="@+id/goto_blobs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Blob Containers" />
+    <Button
+        android:visibility="gone"
+        android:id="@+id/goto_tables"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tables" />
+    <Button
+        android:visibility="gone"
+        android:id="@+id/goto_queues"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Queues" />
 </LinearLayout>
