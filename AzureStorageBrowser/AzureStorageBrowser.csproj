@@ -117,6 +117,7 @@
     <Compile Include="Account.cs" />
     <Compile Include="AzureApi.cs" />
     <Compile Include="AkavacheSqliteLinkerOverride.cs" />
+    <Compile Include="Activities\TableDetailActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -135,6 +136,7 @@
     <AndroidResource Include="Resources\layout\Queue.axml" />
     <AndroidResource Include="Resources\layout\Blob.axml" />
     <AndroidResource Include="Resources\layout\Table.axml" />
+    <AndroidResource Include="Resources\layout\TableDetail.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />
