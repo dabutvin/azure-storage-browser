@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Akavache;
 using Android.App;
+using Android.Webkit;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace AzureStorageBrowser
@@ -15,6 +18,7 @@ namespace AzureStorageBrowser
             var authContext = new AuthenticationContext("https://login.windows.net/common");
             if (authContext.TokenCache.ReadItems().Any())
             {
+                await BlobCache.LocalMachine.InsertObject("loggedInUser", authContext.TokenCache.ReadItems().First().DisplayableId);
                 authContext = new AuthenticationContext(authContext.TokenCache.ReadItems().First().Authority);
             }
 
@@ -25,6 +29,16 @@ namespace AzureStorageBrowser
                 parameters: new PlatformParameters(activity));
 
             return authResult?.AccessToken;
+        }
+
+        public static async Task LogoutAsync()
+        {
+            await BlobCache.LocalMachine.InvalidateAll();
+
+            var authContext = new AuthenticationContext("https://login.windows.net/common");
+            authContext.TokenCache.Clear();
+
+            CookieManager.Instance.RemoveAllCookie();
         }
 
         /*

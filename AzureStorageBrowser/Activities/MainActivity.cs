@@ -19,6 +19,7 @@ namespace AzureStorageBrowser.Activities
     public class MainActivity : BaseActivity
     {
         Button loginButton;
+        Button logoutButton;
         Button blobButton;
         Button queueButton;
         Button tableButton;
@@ -34,11 +35,23 @@ namespace AzureStorageBrowser.Activities
             BlobCache.ApplicationName = nameof(AzureStorageBrowser);
 
             loginButton = FindViewById<Button>(Resource.Id.login);
+            logoutButton = FindViewById<Button>(Resource.Id.logout);
             blobButton = FindViewById<Button>(Resource.Id.goto_blobs);
             queueButton = FindViewById<Button>(Resource.Id.goto_queues);
             tableButton = FindViewById<Button>(Resource.Id.goto_tables);
 
             accountsListView = FindViewById<ListView>(Resource.Id.accounts);
+
+            try
+            {
+                var loggedInUser = await BlobCache.LocalMachine.GetObject<string>("loggedInUser");
+                if (!string.IsNullOrEmpty(loggedInUser))
+                {
+                    loginButton.Text = $"Continue as {loggedInUser}";
+                    logoutButton.Visibility = ViewStates.Visible;
+                }
+            }
+            catch(KeyNotFoundException){}
 
             loginButton.Click += async delegate
             {
@@ -67,6 +80,15 @@ namespace AzureStorageBrowser.Activities
 
                     accountsListView.Adapter = new AccountsListAdapter(this, accounts);
                 }
+            };
+
+            logoutButton.Click += async delegate
+            {
+                await AuthToken.LogoutAsync();
+
+                // restart
+                Finish();
+                StartActivity(Intent);
             };
 
             blobButton.Click += delegate
@@ -105,16 +127,17 @@ namespace AzureStorageBrowser.Activities
             foreach (var subscription in subscriptions)
             {
                 var resources = await httpClient.GetStorageResources(token, subscription.SubscriptionId);
-                foreach(var resource in resources)
+
+                accounts.AddRange(await resources.ForEachAsync(async resource =>
                 {
                     var key = await httpClient.GetStorageKey(token, resource.Id);
-                    accounts.Add(new Account
+                    return new Account
                     {
                         Name = resource.Name,
                         Id = resource.Id,
                         Key = key,
-                    });
-                }
+                    };
+                }));
             }
 
             return accounts.ToArray();

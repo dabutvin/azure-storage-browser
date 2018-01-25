@@ -119,6 +119,7 @@
     <Compile Include="AkavacheSqliteLinkerOverride.cs" />
     <Compile Include="Activities\TableDetailActivity.cs" />
     <Compile Include="Activities\QueueDetailActivity.cs" />
+    <Compile Include="CollectionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
