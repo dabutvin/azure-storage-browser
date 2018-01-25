@@ -79,6 +79,8 @@ namespace AzureStorageBrowser.Activities
                     await BlobCache.LocalMachine.InsertObject("accounts", accounts);
 
                     accountsListView.Adapter = new AccountsListAdapter(this, accounts);
+
+                    logoutButton.Visibility = ViewStates.Visible;
                 }
             };
 
