@@ -28,7 +28,7 @@ namespace AzureStorageBrowser.Activities
 
             var tableClient = storageAccount.CreateCloudTableClient();
 
-            var table = tableClient.GetTableReference("highscore");
+            var table = tableClient.GetTableReference(tableName);
 
             var tableLayout = FindViewById<TableLayout>(Resource.Id.tablelayout);
 
