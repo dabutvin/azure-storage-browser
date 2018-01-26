@@ -12,6 +12,7 @@ using Android.Graphics;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Android.Views;
+using Android.Util;
 
 namespace AzureStorageBrowser.Activities
 {
@@ -19,6 +20,7 @@ namespace AzureStorageBrowser.Activities
     public class BlobDetailActivity : BaseActivity
     {
         ImageView imageView;
+        TextView textView;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -26,7 +28,8 @@ namespace AzureStorageBrowser.Activities
 
             SetContentView(Resource.Layout.BlobDetail);
 
-            imageView = FindViewById<ImageView>(Resource.Id.imageView);
+            imageView = FindViewById<ImageView>(Resource.Id.blobImageView);
+            textView = FindViewById<TextView>(Resource.Id.blobTextView);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var containerName = await BlobCache.LocalMachine.GetObject<string>("selectedContainer");
@@ -55,11 +58,20 @@ namespace AzureStorageBrowser.Activities
 
             blobsListView.ItemClick += async delegate(object sender, AdapterView.ItemClickEventArgs e)
             {
-                var blob = blobs.Results.ElementAt(e.Position);
-                var bitmap = await GetBitmap(blob.Uri);
+                var blob = blobs.Results.OfType<CloudBlockBlob>().ElementAt(e.Position);
 
-                imageView.SetImageBitmap(bitmap);
-                imageView.Visibility = ViewStates.Visible;
+                if (blob.IsImage())
+                {
+                    var bitmap = await GetBitmap(blob);
+
+                    imageView.SetImageBitmap(bitmap);
+                    imageView.Visibility = ViewStates.Visible;
+                }
+                else
+                {
+                    textView.Text = await blob.DownloadTextAsync();
+                    textView.Visibility = ViewStates.Visible;
+                }
             };
 
             imageView.Click += delegate
@@ -67,22 +79,30 @@ namespace AzureStorageBrowser.Activities
                 imageView.Visibility = ViewStates.Gone;
                 imageView.SetImageBitmap(null);
             };
+
+            textView.Click += delegate
+            {
+                textView.Visibility = ViewStates.Gone;
+                textView.Text = null;
+            };
         }
 
-        private async Task<Bitmap> GetBitmap(Uri uri)
+        private async Task<Bitmap> GetBitmap(CloudBlockBlob blob)
         {
             Bitmap imageBitmap = null;
 
-            using (var httpClient = new HttpClient())
+            try
             {
-                var response = await httpClient.GetAsync(uri);
+                var imageBytes = new byte[blob.Properties.Length];
 
-                var imageBytes = await response.Content.ReadAsByteArrayAsync();
+                await blob.DownloadToByteArrayAsync(imageBytes, 0);
+
                 if (imageBytes != null && imageBytes.Length > 0)
                 {
                     imageBitmap = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
                 }
             }
+            catch{}
 
             return imageBitmap;
         }

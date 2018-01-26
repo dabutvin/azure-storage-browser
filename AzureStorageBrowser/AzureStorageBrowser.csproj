@@ -121,6 +121,7 @@
     <Compile Include="Activities\QueueDetailActivity.cs" />
     <Compile Include="CollectionExtensions.cs" />
     <Compile Include="Activities\BlobDetailActivity.cs" />
+    <Compile Include="StorageExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
