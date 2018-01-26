@@ -1,23 +1,19 @@
-﻿using System;
+﻿using System.Linq;
 using System.Reactive.Linq;
-using System.Linq;
+using System.Threading.Tasks;
 using Akavache;
 using Android.App;
+using Android.Graphics;
 using Android.OS;
+using Android.Views;
 using Android.Widget;
 using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Android.Graphics;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Android.Views;
-using Android.Util;
 using Newtonsoft.Json;
 
 namespace AzureStorageBrowser.Activities
 {
-    [Activity(Label = "BlobDetailActivity", NoHistory = true)]
+    [Activity]
     public class BlobDetailActivity : BaseActivity
     {
         ImageView imageView;
@@ -35,11 +31,7 @@ namespace AzureStorageBrowser.Activities
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var containerName = await BlobCache.LocalMachine.GetObject<string>("selectedContainer");
 
-            var accountLabel = FindViewById<TextView>(Resource.Id.account_label);
-            accountLabel.Text = account.Name;
-
-            var containerLabel = FindViewById<TextView>(Resource.Id.container_label);
-            containerLabel.Text = containerName;
+            Title = $"{account.Name} > {containerName}";
 
             var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName={account.Name};AccountKey={account.Key}");
 

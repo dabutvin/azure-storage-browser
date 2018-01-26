@@ -9,7 +9,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace AzureStorageBrowser.Activities
 {
-    [Activity(Label = "TableDetailActivity")]
+    [Activity]
     public class TableDetailActivity : BaseActivity
     {
         protected override async void OnCreate(Bundle savedInstanceState)
@@ -21,8 +21,7 @@ namespace AzureStorageBrowser.Activities
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var tableName = await BlobCache.LocalMachine.GetObject<string>("selectedTable");
 
-            var accountLabel = FindViewById<TextView>(Resource.Id.account_label);
-            accountLabel.Text = account.Name;
+            Title = $"{account.Name} > {tableName}";
 
             var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName={account.Name};AccountKey={account.Key}");
 

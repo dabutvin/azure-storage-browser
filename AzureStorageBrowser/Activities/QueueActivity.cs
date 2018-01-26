@@ -17,7 +17,7 @@ using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace AzureStorageBrowser.Activities
 {
-    [Activity(Label = "QueueActivity")]
+    [Activity]
     public class QueueActivity : BaseActivity
     {
         CloudQueueClient queueClient;
@@ -30,8 +30,7 @@ namespace AzureStorageBrowser.Activities
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
 
-            var accountLabel = FindViewById<TextView>(Resource.Id.account_label);
-            accountLabel.Text = account.Name;
+            Title = account.Name;
 
             var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName={account.Name};AccountKey={account.Key}");
 

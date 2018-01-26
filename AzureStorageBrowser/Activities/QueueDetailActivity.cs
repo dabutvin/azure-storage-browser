@@ -10,7 +10,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace AzureStorageBrowser.Activities
 {
-    [Activity(Label = "QueueDetailActivity", NoHistory = true)]
+    [Activity]
     public class QueueDetailActivity : BaseActivity
     {
         protected override async void OnCreate(Bundle savedInstanceState)
@@ -22,8 +22,7 @@ namespace AzureStorageBrowser.Activities
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var queueName = await BlobCache.LocalMachine.GetObject<string>("selectedQueue");
 
-            var accountLabel = FindViewById<TextView>(Resource.Id.account_label);
-            accountLabel.Text = account.Name;
+            Title = $"{account.Name} > {queueName}";
 
             var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName={account.Name};AccountKey={account.Key}");
 
