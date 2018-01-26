@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using Android.Views;
 using Android.Util;
+using Newtonsoft.Json;
 
 namespace AzureStorageBrowser.Activities
 {
@@ -69,7 +70,9 @@ namespace AzureStorageBrowser.Activities
                 }
                 else
                 {
-                    textView.Text = await blob.DownloadTextAsync();
+                    var text = await blob.DownloadTextAsync();
+                    var prettyText = ShittyPrettyPrint(text);
+                    textView.Text = prettyText;
                     textView.Visibility = ViewStates.Visible;
                 }
             };
@@ -85,6 +88,18 @@ namespace AzureStorageBrowser.Activities
                 textView.Visibility = ViewStates.Gone;
                 textView.Text = null;
             };
+        }
+
+        private string ShittyPrettyPrint(string text)
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(JsonConvert.DeserializeObject(text), Formatting.Indented);    
+            }
+            catch
+            {
+                return text;
+            }
         }
 
         private async Task<Bitmap> GetBitmap(CloudBlockBlob blob)
