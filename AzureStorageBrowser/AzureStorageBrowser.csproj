@@ -120,6 +120,7 @@
     <Compile Include="Activities\TableDetailActivity.cs" />
     <Compile Include="Activities\QueueDetailActivity.cs" />
     <Compile Include="CollectionExtensions.cs" />
+    <Compile Include="Activities\BlobDetailActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -140,6 +141,7 @@
     <AndroidResource Include="Resources\layout\Table.axml" />
     <AndroidResource Include="Resources\layout\TableDetail.axml" />
     <AndroidResource Include="Resources\layout\QueueDetail.axml" />
+    <AndroidResource Include="Resources\layout\BlobDetail.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

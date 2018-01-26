@@ -73,6 +73,15 @@ namespace AzureStorageBrowser.Activities
                         this,
                         Android.Resource.Layout.SimpleListItem1,
                         containers.ToArray());
+
+                    containersListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
+                    {
+                        if (e.Position > -1)
+                        {
+                            await BlobCache.LocalMachine.InsertObject("selectedContainer", containers[e.Position]);
+                            StartActivity(typeof(BlobDetailActivity));
+                        }
+                    };
                 }
             }
             catch(KeyNotFoundException){}
