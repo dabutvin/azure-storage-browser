@@ -30,7 +30,7 @@ namespace AzureStorageBrowser.Activities
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
 
-            Title = account.Name;
+            Title = $"{account.Name} > containers";
 
             var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName={account.Name};AccountKey={account.Key}");
 
