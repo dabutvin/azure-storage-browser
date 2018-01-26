@@ -8,17 +8,25 @@ using Android.Widget;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Android.Graphics;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Android.Views;
 
 namespace AzureStorageBrowser.Activities
 {
     [Activity(Label = "BlobDetailActivity", NoHistory = true)]
     public class BlobDetailActivity : BaseActivity
     {
+        ImageView imageView;
+
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.BlobDetail);
+
+            imageView = FindViewById<ImageView>(Resource.Id.imageView);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var containerName = await BlobCache.LocalMachine.GetObject<string>("selectedContainer");
@@ -43,6 +51,40 @@ namespace AzureStorageBrowser.Activities
                 this,
                 Android.Resource.Layout.SimpleListItem1,
                 blobs.Results.OfType<CloudBlockBlob>().Select(x => x.Name).ToArray());
+
+
+            blobsListView.ItemClick += async delegate(object sender, AdapterView.ItemClickEventArgs e)
+            {
+                var blob = blobs.Results.ElementAt(e.Position);
+                var bitmap = await GetBitmap(blob.Uri);
+
+                imageView.SetImageBitmap(bitmap);
+                imageView.Visibility = ViewStates.Visible;
+            };
+
+            imageView.Click += delegate
+            {
+                imageView.Visibility = ViewStates.Gone;
+                imageView.SetImageBitmap(null);
+            };
+        }
+
+        private async Task<Bitmap> GetBitmap(Uri uri)
+        {
+            Bitmap imageBitmap = null;
+
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetAsync(uri);
+
+                var imageBytes = await response.Content.ReadAsByteArrayAsync();
+                if (imageBytes != null && imageBytes.Length > 0)
+                {
+                    imageBitmap = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                }
+            }
+
+            return imageBitmap;
         }
     }
 }

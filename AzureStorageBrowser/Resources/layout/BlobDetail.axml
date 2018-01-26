@@ -16,6 +16,11 @@
         android:layout_height="wrap_content"
         android:text=""
         android:id="@+id/container_label" />
+    <ImageView
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView" />
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
