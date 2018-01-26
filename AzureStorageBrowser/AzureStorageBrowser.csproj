@@ -143,6 +143,7 @@
     <AndroidResource Include="Resources\layout\TableDetail.axml" />
     <AndroidResource Include="Resources\layout\QueueDetail.axml" />
     <AndroidResource Include="Resources\layout\BlobDetail.axml" />
+    <AndroidResource Include="Resources\drawable\azure_storage_browser.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

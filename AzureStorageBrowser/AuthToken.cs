@@ -15,20 +15,29 @@ namespace AzureStorageBrowser
 
         public static async Task<string> GetTokenAsync(this Activity activity)
         {
-            var authContext = new AuthenticationContext("https://login.windows.net/common");
-            if (authContext.TokenCache.ReadItems().Any())
+            try
             {
-                await BlobCache.LocalMachine.InsertObject("loggedInUser", authContext.TokenCache.ReadItems().First().DisplayableId);
-                authContext = new AuthenticationContext(authContext.TokenCache.ReadItems().First().Authority);
+                var authContext = new AuthenticationContext("https://login.windows.net/common");
+                if (authContext.TokenCache.ReadItems().Any())
+                {
+                    await SaveLoggedInUser(authContext);
+                    authContext = new AuthenticationContext(authContext.TokenCache.ReadItems().First().Authority);
+                }
+
+                authResult = await authContext.AcquireTokenAsync(
+                    resource: "https://management.azure.com/",
+                    clientId: "a8c2e660-92bf-4905-89bf-2b8fbc685186",
+                    redirectUri: new Uri("https://azurestoragebrowser.com"),
+                    parameters: new PlatformParameters(activity));
+
+                await SaveLoggedInUser(authContext);
+
+                return authResult?.AccessToken;
             }
-
-            authResult = await authContext.AcquireTokenAsync(
-                resource: "https://management.azure.com/",
-                clientId: "a8c2e660-92bf-4905-89bf-2b8fbc685186",
-                redirectUri: new Uri("https://azurestoragebrowser.com"),
-                parameters: new PlatformParameters(activity));
-
-            return authResult?.AccessToken;
+            catch(Exception)
+            {
+                return null;
+            }
         }
 
         public static async Task LogoutAsync()
@@ -39,6 +48,11 @@ namespace AzureStorageBrowser
             authContext.TokenCache.Clear();
 
             CookieManager.Instance.RemoveAllCookie();
+        }
+
+        private static async Task SaveLoggedInUser(AuthenticationContext authContext)
+        {
+            await BlobCache.LocalMachine.InsertObject("loggedInUser", authContext.TokenCache.ReadItems().First().DisplayableId);
         }
 
         /*

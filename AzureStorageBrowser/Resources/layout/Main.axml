@@ -3,13 +3,20 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/homeimage"
+        android:src="@drawable/azure_storage_browser"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
     <Button
+        android:visibility="invisible"
         android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/login" />
     <Button
-        android:visibility="gone"
+        android:visibility="invisible"
         android:id="@+id/logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

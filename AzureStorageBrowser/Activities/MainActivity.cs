@@ -1,17 +1,12 @@
-﻿using Android.App;
-using Android.Widget;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using Akavache;
+using Android.App;
 using Android.OS;
 using Android.Views;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reactive.Linq;
-using Newtonsoft.Json;
-using Android.Content;
-using Akavache;
+using Android.Widget;
 
 namespace AzureStorageBrowser.Activities
 {
@@ -25,6 +20,7 @@ namespace AzureStorageBrowser.Activities
         Button tableButton;
 
         ListView accountsListView;
+        ImageView homeImageView;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -41,6 +37,7 @@ namespace AzureStorageBrowser.Activities
             tableButton = FindViewById<Button>(Resource.Id.goto_tables);
 
             accountsListView = FindViewById<ListView>(Resource.Id.accounts);
+            homeImageView = FindViewById<ImageView>(Resource.Id.homeimage);
 
             try
             {
@@ -50,16 +47,26 @@ namespace AzureStorageBrowser.Activities
                     loginButton.Text = $"Continue as {loggedInUser}";
                     logoutButton.Visibility = ViewStates.Visible;
                 }
+
+                loginButton.Visibility = ViewStates.Visible;
             }
             catch(KeyNotFoundException){}
 
             loginButton.Click += async delegate
             {
+                loginButton.Visibility = ViewStates.Gone;
+                homeImageView.Visibility = ViewStates.Gone;
+
                 var token = await this.GetTokenAsync();
 
-                if(token != null)
+                if (token == null)
                 {
-                    loginButton.Visibility = ViewStates.Gone;
+                    loginButton.Visibility = ViewStates.Visible;
+                    homeImageView.Visibility = ViewStates.Visible;
+                }
+                else
+                {
+                    homeImageView.Visibility = ViewStates.Gone;
                     blobButton.Visibility = ViewStates.Visible;
                     tableButton.Visibility = ViewStates.Visible;
                     queueButton.Visibility = ViewStates.Visible;
@@ -116,6 +123,8 @@ namespace AzureStorageBrowser.Activities
                     "selectedAccount",
                     cachedAccounts[accountsListView.CheckedItemPosition]);
             };
+
+            loginButton.Visibility = ViewStates.Visible;
         }
 
         private async Task<Account[]> FetchAccounts(string token)
