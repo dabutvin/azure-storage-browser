@@ -122,6 +122,8 @@
     <Compile Include="CollectionExtensions.cs" />
     <Compile Include="Activities\BlobDetailActivity.cs" />
     <Compile Include="StorageExtensions.cs" />
+    <Compile Include="Activities\AccountActivity.cs" />
+    <Compile Include="Activities\ServiceActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -145,6 +147,8 @@
     <AndroidResource Include="Resources\layout\BlobDetail.axml" />
     <AndroidResource Include="Resources\drawable\azure_storage_browser.jpg" />
     <AndroidResource Include="Resources\menu\Settings.xml" />
+    <AndroidResource Include="Resources\layout\Account.axml" />
+    <AndroidResource Include="Resources\layout\Service.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

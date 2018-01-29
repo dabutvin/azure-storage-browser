@@ -10,18 +10,20 @@
         android:layout_height="0dp"
         android:layout_weight="2" />
     <LinearLayout
+        android:layout_weight="1"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:gravity="center"
         android:layout_height="wrap_content">
         <TextView
+            android:id="@+id/hometitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
             android:text="AZURE STORAGE BROWSER"
             android:paddingBottom="28sp" />
         <Button
-            android:visibility="visible"
+            android:visibility="invisible"
             android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,35 +33,5 @@
             android:textSize="18sp"
             android:paddingTop="5sp"
             android:paddingBottom="5sp" />
-    </LinearLayout>
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".5"
-        android:choiceMode="singleChoice"
-        android:id="@+id/accounts" />
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".5">
-        <Button
-            android:visibility="gone"
-            android:id="@+id/goto_blobs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Blob Containers" />
-        <Button
-            android:visibility="gone"
-            android:id="@+id/goto_tables"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tables" />
-        <Button
-            android:visibility="gone"
-            android:id="@+id/goto_queues"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Queues" />
     </LinearLayout>
 </LinearLayout>

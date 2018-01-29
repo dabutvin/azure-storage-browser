@@ -14,12 +14,8 @@ namespace AzureStorageBrowser.Activities
     public class MainActivity : BaseActivity
     {
         Button loginButton;
-        Button blobButton;
-        Button queueButton;
-        Button tableButton;
-
-        ListView accountsListView;
-        ImageView homeImageView;
+        ImageView homeImage;
+        TextView homeTitle;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -30,12 +26,8 @@ namespace AzureStorageBrowser.Activities
             BlobCache.ApplicationName = nameof(AzureStorageBrowser);
 
             loginButton = FindViewById<Button>(Resource.Id.login);
-            blobButton = FindViewById<Button>(Resource.Id.goto_blobs);
-            queueButton = FindViewById<Button>(Resource.Id.goto_queues);
-            tableButton = FindViewById<Button>(Resource.Id.goto_tables);
-
-            accountsListView = FindViewById<ListView>(Resource.Id.accounts);
-            homeImageView = FindViewById<ImageView>(Resource.Id.homeimage);
+            homeImage = FindViewById<ImageView>(Resource.Id.homeimage);
+            homeTitle = FindViewById<TextView>(Resource.Id.hometitle);
 
             try
             {
@@ -44,100 +36,30 @@ namespace AzureStorageBrowser.Activities
                 {
                     loginButton.Text = $"Continue as {loggedInUser}";
                 }
-
-                loginButton.Visibility = ViewStates.Visible;
             }
             catch(KeyNotFoundException){}
+            finally{ loginButton.Visibility = ViewStates.Visible; }
 
             loginButton.Click += async delegate
             {
+                homeImage.Visibility = ViewStates.Gone;
                 loginButton.Visibility = ViewStates.Gone;
-                homeImageView.Visibility = ViewStates.Gone;
+                homeTitle.Visibility = ViewStates.Gone;
 
                 var token = await this.GetTokenAsync();
 
                 if (token == null)
                 {
-                    loginButton.Visibility = ViewStates.Visible;
-                    homeImageView.Visibility = ViewStates.Visible;
+                    // Reset to try to get a token again
+                    Finish();
+                    StartActivity(Intent);
                 }
                 else
                 {
-                    homeImageView.Visibility = ViewStates.Gone;
-                    blobButton.Visibility = ViewStates.Visible;
-                    tableButton.Visibility = ViewStates.Visible;
-                    queueButton.Visibility = ViewStates.Visible;
-
-                    try
-                    {
-                        var cachedAccounts = await BlobCache.LocalMachine.GetObject<Account[]>("accounts");
-                        if (cachedAccounts != null)
-                        {
-                            accountsListView.Adapter = new AccountsListAdapter(this, cachedAccounts);
-                        }
-                    }
-                    catch (KeyNotFoundException) { }
-
-                    var accounts = await FetchAccounts(token);
-
-                    await BlobCache.LocalMachine.InsertObject("accounts", accounts);
-
-                    accountsListView.Adapter = new AccountsListAdapter(this, accounts);
+                    await BlobCache.LocalMachine.InsertObject<string>("token", token);
+                    StartActivity(typeof(AccountActivity));
                 }
             };
-
-            blobButton.Click += delegate
-            {
-                StartActivity(typeof(BlobActivity));
-            };
-
-            queueButton.Click += delegate
-            {
-                StartActivity(typeof(QueueActivity));   
-            };
-
-            tableButton.Click += delegate
-            {
-                StartActivity(typeof(TableActivity));
-            };
-
-            accountsListView.ItemClick += async delegate
-            {
-                var cachedAccounts = await BlobCache.LocalMachine.GetObject<Account[]>("accounts");
-
-                await BlobCache.LocalMachine.InsertObject(
-                    "selectedAccount",
-                    cachedAccounts[accountsListView.CheckedItemPosition]);
-            };
-
-            loginButton.Visibility = ViewStates.Visible;
-        }
-
-        private async Task<Account[]> FetchAccounts(string token)
-        {
-            var httpClient = new HttpClient();
-
-            var subscriptions = await httpClient.GetSubscriptions(token);
-
-            var accounts = new List<Account>();
-
-            foreach (var subscription in subscriptions)
-            {
-                var resources = await httpClient.GetStorageResources(token, subscription.SubscriptionId);
-
-                accounts.AddRange(await resources.ForEachAsync(async resource =>
-                {
-                    var key = await httpClient.GetStorageKey(token, resource.Id);
-                    return new Account
-                    {
-                        Name = resource.Name,
-                        Id = resource.Id,
-                        Key = key,
-                    };
-                }));
-            }
-
-            return accounts.ToArray();
         }
     }
 }
