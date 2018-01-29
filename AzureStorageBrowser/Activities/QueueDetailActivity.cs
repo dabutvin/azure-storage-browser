@@ -17,6 +17,9 @@ namespace AzureStorageBrowser.Activities
         {
             base.OnCreate(savedInstanceState);
 
+            ActionBar.SetHomeButtonEnabled(true);
+            ActionBar.SetDisplayHomeAsUpEnabled(true);
+
             SetContentView(Resource.Layout.QueueDetail);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
@@ -29,6 +32,7 @@ namespace AzureStorageBrowser.Activities
             var queueClient = storageAccount.CreateCloudQueueClient();
 
             var queue = queueClient.GetQueueReference(queueName);
+            queueClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
             var messagesListView = FindViewById<ListView>(Resource.Id.messages);
 

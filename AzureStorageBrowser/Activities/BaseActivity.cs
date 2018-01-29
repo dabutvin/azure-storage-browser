@@ -7,10 +7,6 @@ namespace AzureStorageBrowser.Activities
 {
     public class BaseActivity : Activity
     {
-        public BaseActivity()
-        {
-        }
-
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {
             MenuInflater.Inflate(Resource.Menu.Settings, menu);
@@ -19,13 +15,22 @@ namespace AzureStorageBrowser.Activities
 
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
-            Task.Run(async () => { await AuthToken.LogoutAsync(); }).Wait();
+            switch(item.ItemId)
+            {
+                case Android.Resource.Id.Home:
+                    Finish();
+                    break;
+                case Resource.Id.logout:
+                    Task.Run(async () => { await AuthToken.LogoutAsync(); }).Wait();
+                    Finish();
+                    StartActivity(typeof(MainActivity));
+                    break;
+                default:
+                    return base.OnOptionsItemSelected(item);
 
-            // restart
-            Finish();
-            StartActivity(typeof(MainActivity));
+            }
 
-            return base.OnOptionsItemSelected(item);
+            return true;
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)

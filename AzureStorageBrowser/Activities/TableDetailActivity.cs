@@ -16,6 +16,9 @@ namespace AzureStorageBrowser.Activities
         {
             base.OnCreate(savedInstanceState);
 
+            ActionBar.SetHomeButtonEnabled(true);
+            ActionBar.SetDisplayHomeAsUpEnabled(true);
+
             SetContentView(Resource.Layout.TableDetail);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
@@ -26,6 +29,7 @@ namespace AzureStorageBrowser.Activities
             var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName={account.Name};AccountKey={account.Key}");
 
             var tableClient = storageAccount.CreateCloudTableClient();
+            tableClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
             var table = tableClient.GetTableReference(tableName);
 

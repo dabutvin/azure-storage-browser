@@ -26,6 +26,9 @@ namespace AzureStorageBrowser.Activities
         {
             base.OnCreate(savedInstanceState);
 
+            ActionBar.SetHomeButtonEnabled(true);
+            ActionBar.SetDisplayHomeAsUpEnabled(true);
+
             SetContentView(Resource.Layout.Blob);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
@@ -35,6 +38,7 @@ namespace AzureStorageBrowser.Activities
             var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName={account.Name};AccountKey={account.Key}");
 
             blobClient = storageAccount.CreateCloudBlobClient();
+            blobClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
             await BindContainersAsync($"{account.Id}/containers");
             await RefreshContainersAsync($"{account.Id}/containers");

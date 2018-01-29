@@ -17,6 +17,9 @@ namespace AzureStorageBrowser.Activities
         {
             base.OnCreate(savedInstanceState);
 
+            ActionBar.SetHomeButtonEnabled(true);
+            ActionBar.SetDisplayHomeAsUpEnabled(true);
+
             SetContentView(Resource.Layout.Service);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
