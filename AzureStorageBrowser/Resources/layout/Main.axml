@@ -9,18 +9,31 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2" />
-    <Button
-        android:visibility="invisible"
-        android:id="@+id/login"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login" />
-    <Button
-        android:visibility="invisible"
-        android:id="@+id/logout"
-        android:layout_width="match_parent"
+        android:textSize="22sp"
+        android:text="AZURE STORAGE BROWSER"
+        android:textAlignment="center"
+        android:paddingBottom="28sp"
+        android:layout_gravity="center" />
+    <LinearLayout
+        android:paddingRight="50dp"
+        android:paddingLeft="50dp"
+        android:orientation="vertical"
         android:layout_height="wrap_content"
-        android:text="Logout" />
+        android:layout_width="match_parent">
+        <Button
+            android:visibility="visible"
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:layout_gravity="center"
+            android:background="#ff616161"
+            android:textColor="#ffffffff"
+            android:textSize="18sp" />
+    </LinearLayout>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="0dp"

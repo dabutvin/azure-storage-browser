@@ -144,10 +144,12 @@
     <AndroidResource Include="Resources\layout\QueueDetail.axml" />
     <AndroidResource Include="Resources\layout\BlobDetail.axml" />
     <AndroidResource Include="Resources\drawable\azure_storage_browser.jpg" />
+    <AndroidResource Include="Resources\menu\Settings.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />
     <Folder Include="Activities\" />
+    <Folder Include="Resources\menu\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

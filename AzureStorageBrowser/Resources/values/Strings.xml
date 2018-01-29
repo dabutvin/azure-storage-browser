@@ -3,5 +3,6 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
 	<string name="login">Login</string>
+    <string name="logout"><u>Logout</u></string>
 	<string name="app_name">Azure Storage Browser</string>
 </resources>
