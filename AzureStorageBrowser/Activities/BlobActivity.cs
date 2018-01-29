@@ -21,6 +21,7 @@ namespace AzureStorageBrowser.Activities
     public class BlobActivity : BaseActivity
     {
         CloudBlobClient blobClient;
+        ListView containersListView;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -40,10 +41,26 @@ namespace AzureStorageBrowser.Activities
             blobClient = storageAccount.CreateCloudBlobClient();
             blobClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
+            containersListView = FindViewById<ListView>(Resource.Id.containers);
+
+            BindContainerClick($"{account.Id}/containers");
             await BindContainersAsync($"{account.Id}/containers");
             await RefreshContainersAsync($"{account.Id}/containers");
             await BindContainersAsync($"{account.Id}/containers");
 
+        }
+
+        private void BindContainerClick(string id)
+        {
+            containersListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
+            {
+                if (e.Position > -1)
+                {
+                    var containers = await BlobCache.LocalMachine.GetObject<string[]>(id);
+                    await BlobCache.LocalMachine.InsertObject("selectedContainer", containers[e.Position]);
+                    StartActivity(typeof(BlobDetailActivity));
+                }
+            };
         }
 
         private async Task RefreshContainersAsync(string id)
@@ -70,21 +87,10 @@ namespace AzureStorageBrowser.Activities
 
                 if (containers != null)
                 {
-                    var containersListView = FindViewById<ListView>(Resource.Id.containers);
-
                     containersListView.Adapter = new ArrayAdapter<string>(
                         this,
                         Android.Resource.Layout.SimpleListItem1,
                         containers.ToArray());
-
-                    containersListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
-                    {
-                        if (e.Position > -1)
-                        {
-                            await BlobCache.LocalMachine.InsertObject("selectedContainer", containers[e.Position]);
-                            StartActivity(typeof(BlobDetailActivity));
-                        }
-                    };
                 }
             }
             catch(KeyNotFoundException){}

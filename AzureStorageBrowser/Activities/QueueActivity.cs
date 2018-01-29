@@ -21,6 +21,7 @@ namespace AzureStorageBrowser.Activities
     public class QueueActivity : BaseActivity
     {
         CloudQueueClient queueClient;
+        ListView queuesListView;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -40,10 +41,27 @@ namespace AzureStorageBrowser.Activities
             queueClient = storageAccount.CreateCloudQueueClient();
             queueClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
+            queuesListView = FindViewById<ListView>(Resource.Id.queues);
+
+
+            BindQueueClick($"{account.Id}/queues");
             await BindQueuesAsync($"{account.Id}/queues");
             await RefreshQueuesAsync($"{account.Id}/queues");
             await BindQueuesAsync($"{account.Id}/queues");
 
+        }
+
+        private void BindQueueClick(string id)
+        {
+            queuesListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
+            {
+                if (e.Position > -1)
+                {
+                    var queues = await BlobCache.LocalMachine.GetObject<string[]>(id);
+                    await BlobCache.LocalMachine.InsertObject("selectedQueue", queues[e.Position]);
+                    StartActivity(typeof(QueueDetailActivity));
+                }
+            };
         }
 
         private async Task RefreshQueuesAsync(string id)
@@ -70,21 +88,10 @@ namespace AzureStorageBrowser.Activities
 
                 if (queues != null)
                 {
-                    var queuesListView = FindViewById<ListView>(Resource.Id.queues);
-
                     queuesListView.Adapter = new ArrayAdapter<string>(
                         this,
                         Android.Resource.Layout.SimpleListItem1,
                         queues.ToArray());
-
-                    queuesListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
-                    {
-                        if (e.Position > -1)
-                        {
-                            await BlobCache.LocalMachine.InsertObject("selectedQueue", queues[e.Position]);
-                            StartActivity(typeof(QueueDetailActivity));
-                        }
-                    };
                 }
             }
             catch (KeyNotFoundException) { }

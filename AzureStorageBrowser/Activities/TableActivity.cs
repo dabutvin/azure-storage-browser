@@ -21,6 +21,7 @@ namespace AzureStorageBrowser.Activities
     public class TableActivity : BaseActivity
     {
         CloudTableClient tableClient;
+        ListView tablesListView;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -40,10 +41,26 @@ namespace AzureStorageBrowser.Activities
             tableClient = storageAccount.CreateCloudTableClient();
             tableClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
+            tablesListView = FindViewById<ListView>(Resource.Id.tables);
+
+            BindTableClick($"{account.Id}/tables");
             await BindTablesAsync($"{account.Id}/tables");
             await RefreshTablesAsync($"{account.Id}/tables");
             await BindTablesAsync($"{account.Id}/tables");
 
+        }
+
+        private void BindTableClick(string id)
+        {
+            tablesListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
+            {
+                if (e.Position > -1)
+                {
+                    var tables = await BlobCache.LocalMachine.GetObject<string[]>(id);
+                    await BlobCache.LocalMachine.InsertObject("selectedTable", tables[e.Position]);
+                    StartActivity(typeof(TableDetailActivity));
+                }
+            };
         }
 
         private async Task RefreshTablesAsync(string id)
@@ -70,21 +87,10 @@ namespace AzureStorageBrowser.Activities
 
                 if (tables != null)
                 {
-                    var tablesListView = FindViewById<ListView>(Resource.Id.tables);
-
                     tablesListView.Adapter = new ArrayAdapter<string>(
                         this,
                         Android.Resource.Layout.SimpleListItem1,
                         tables.ToArray());
-
-                    tablesListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
-                    {
-                        if (e.Position > -1)
-                        {
-                            await BlobCache.LocalMachine.InsertObject("selectedTable", tables[e.Position]);
-                            StartActivity(typeof(TableDetailActivity));
-                        }
-                    };
                 }
             }
             catch (KeyNotFoundException) { }
