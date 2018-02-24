@@ -73,6 +73,12 @@ namespace AzureStorageBrowser.Activities
 
             await BlobCache.LocalMachine.InsertObject(id, containers.ToArray());
             progressBar.Visibility = Android.Views.ViewStates.Gone;
+
+            if (containers.Any() == false)
+            {
+                var emptyMessage = FindViewById<TextView>(Resource.Id.empty);
+                emptyMessage.Visibility = Android.Views.ViewStates.Visible;
+            }
         }
 
         private async Task BindContainersAsync(string id)
