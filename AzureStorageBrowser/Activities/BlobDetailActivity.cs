@@ -18,6 +18,7 @@ namespace AzureStorageBrowser.Activities
     {
         ImageView imageView;
         TextView textView;
+        ProgressBar progressBar;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -30,6 +31,7 @@ namespace AzureStorageBrowser.Activities
 
             imageView = FindViewById<ImageView>(Resource.Id.blobImageView);
             textView = FindViewById<TextView>(Resource.Id.blobTextView);
+            progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var containerName = await BlobCache.LocalMachine.GetObject<string>("selectedContainer");
@@ -45,45 +47,56 @@ namespace AzureStorageBrowser.Activities
 
             var blobsListView = FindViewById<ListView>(Resource.Id.blobs);
 
-            var blobs = await container.ListBlobsSegmentedAsync(null);
+            var blobs = (await container.ListBlobsSegmentedAsync(null))
+                .Results.OfType<CloudBlockBlob>()
+                .ToArray();
 
-            blobsListView.Adapter = new ArrayAdapter<string>(
+            progressBar.Visibility = ViewStates.Gone;
+
+            if (blobs.Any() == false)
+            {
+                var emptyMessage = FindViewById<TextView>(Resource.Id.empty);
+                emptyMessage.Visibility = Android.Views.ViewStates.Visible;
+            }
+            else
+            {
+                blobsListView.Adapter = new ArrayAdapter<string>(
                 this,
                 Android.Resource.Layout.SimpleListItem1,
-                blobs.Results.OfType<CloudBlockBlob>().Select(x => x.Name).ToArray());
+                blobs.Select(x => x.Name).ToArray());
 
-
-            blobsListView.ItemClick += async delegate(object sender, AdapterView.ItemClickEventArgs e)
-            {
-                var blob = blobs.Results.OfType<CloudBlockBlob>().ElementAt(e.Position);
-
-                if (blob.IsImage())
+                blobsListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
                 {
-                    var bitmap = await GetBitmap(blob);
+                    var blob = blobs.ElementAt(e.Position);
 
-                    imageView.SetImageBitmap(bitmap);
-                    imageView.Visibility = ViewStates.Visible;
-                }
-                else
+                    if (blob.IsImage())
+                    {
+                        var bitmap = await GetBitmap(blob);
+
+                        imageView.SetImageBitmap(bitmap);
+                        imageView.Visibility = ViewStates.Visible;
+                    }
+                    else
+                    {
+                        var text = await blob.DownloadTextAsync();
+                        var prettyText = ShittyPrettyPrint(text);
+                        textView.Text = prettyText;
+                        textView.Visibility = ViewStates.Visible;
+                    }
+                };
+
+                imageView.Click += delegate
                 {
-                    var text = await blob.DownloadTextAsync();
-                    var prettyText = ShittyPrettyPrint(text);
-                    textView.Text = prettyText;
-                    textView.Visibility = ViewStates.Visible;
-                }
-            };
+                    imageView.Visibility = ViewStates.Gone;
+                    imageView.SetImageBitmap(null);
+                };
 
-            imageView.Click += delegate
-            {
-                imageView.Visibility = ViewStates.Gone;
-                imageView.SetImageBitmap(null);
-            };
-
-            textView.Click += delegate
-            {
-                textView.Visibility = ViewStates.Gone;
-                textView.Text = null;
-            };
+                textView.Click += delegate
+                {
+                    textView.Visibility = ViewStates.Gone;
+                    textView.Text = null;
+                };
+            }
         }
 
         private string ShittyPrettyPrint(string text)
