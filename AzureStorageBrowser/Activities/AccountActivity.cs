@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -56,6 +57,12 @@ namespace AzureStorageBrowser.Activities
 
             progressBar.Visibility = Android.Views.ViewStates.Gone;
             accountsListView.Adapter = new AccountsListAdapter(this, accounts);
+
+            if(accounts.Any() == false)
+            {
+                var emptyMessage = FindViewById<TextView>(Resource.Id.empty);
+                emptyMessage.Visibility = Android.Views.ViewStates.Visible;
+            }
         }
 
         private async Task<Account[]> FetchAccounts(string token)
