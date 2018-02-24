@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <Button
+        android:background="@drawable/service_button"
+        style="@style/servicebutton"
         android:id="@+id/goto_blobs"
-        android:layout_width="match_parent"
+        android:layout_weight="33"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Blob Containers" />
+        android:text="Blob"
+        android:drawableTop="#ff424242" />
     <Button
+        android:background="@drawable/service_button"
+        style="@style/servicebutton"
         android:id="@+id/goto_tables"
-        android:layout_width="match_parent"
+        android:layout_weight="33"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Tables" />
+        android:text="Table" />
     <Button
+        android:background="@drawable/service_button"
+        style="@style/servicebutton"
         android:id="@+id/goto_queues"
-        android:layout_width="match_parent"
+        android:layout_weight="33"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Queues" />
+        android:text="Queue" />
 </LinearLayout>
