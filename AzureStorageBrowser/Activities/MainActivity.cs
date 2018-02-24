@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using Akavache;
 using Android.App;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace AzureStorageBrowser.Activities
 {
@@ -24,6 +25,8 @@ namespace AzureStorageBrowser.Activities
             SetContentView(Resource.Layout.Main);
 
             BlobCache.ApplicationName = nameof(AzureStorageBrowser);
+
+            AppCenter.Start("3c0813dd-30a8-4215-987d-68fc759340e0", typeof(Analytics), typeof(Crashes));
 
             loginButton = FindViewById<Button>(Resource.Id.login);
             homeImage = FindViewById<ImageView>(Resource.Id.homeimage);
