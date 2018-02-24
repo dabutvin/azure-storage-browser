@@ -1,16 +1,10 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Akavache;
 using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
 using Android.Widget;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -22,6 +16,7 @@ namespace AzureStorageBrowser.Activities
     {
         CloudTableClient tableClient;
         ListView tablesListView;
+        ProgressBar progressBar;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -42,12 +37,12 @@ namespace AzureStorageBrowser.Activities
             tableClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
             tablesListView = FindViewById<ListView>(Resource.Id.tables);
+            progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
 
             BindTableClick($"{account.Id}/tables");
             await BindTablesAsync($"{account.Id}/tables");
             await RefreshTablesAsync($"{account.Id}/tables");
             await BindTablesAsync($"{account.Id}/tables");
-
         }
 
         private void BindTableClick(string id)
@@ -77,6 +72,7 @@ namespace AzureStorageBrowser.Activities
             } while (continuationToken != null);
 
             await BlobCache.LocalMachine.InsertObject(id, tables.ToArray());
+            progressBar.Visibility = Android.Views.ViewStates.Gone;
         }
 
         private async Task BindTablesAsync(string id)
@@ -93,7 +89,10 @@ namespace AzureStorageBrowser.Activities
                         tables.ToArray());
                 }
             }
-            catch (KeyNotFoundException) { }
+            catch (KeyNotFoundException)
+            {
+                progressBar.Visibility = Android.Views.ViewStates.Visible;
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ namespace AzureStorageBrowser.Activities
     public class AccountActivity : BaseActivity
     {
         ListView accountsListView;
+        ProgressBar progressBar;
 
         protected override async void OnCreate(Android.OS.Bundle savedInstanceState)
         {
@@ -22,6 +23,7 @@ namespace AzureStorageBrowser.Activities
             SetContentView(Resource.Layout.Account);
 
             accountsListView = FindViewById<ListView>(Resource.Id.accounts);
+            progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
 
             try
             {
@@ -31,7 +33,10 @@ namespace AzureStorageBrowser.Activities
                     accountsListView.Adapter = new AccountsListAdapter(this, cachedAccounts);
                 }
             }
-            catch (KeyNotFoundException) { }
+            catch (KeyNotFoundException)
+            {
+                progressBar.Visibility = Android.Views.ViewStates.Visible;
+            }
 
             accountsListView.ItemClick += async delegate(object sender, ItemClickEventArgs e)
             {
@@ -49,6 +54,7 @@ namespace AzureStorageBrowser.Activities
 
             await BlobCache.LocalMachine.InsertObject("accounts", accounts);
 
+            progressBar.Visibility = Android.Views.ViewStates.Gone;
             accountsListView.Adapter = new AccountsListAdapter(this, accounts);
         }
 
