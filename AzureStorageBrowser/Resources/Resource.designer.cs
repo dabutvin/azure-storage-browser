@@ -64,56 +64,59 @@ namespace AzureStorageBrowser
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f070000
-			public const int accounts = 2131165184;
-			
-			// aapt resource value: 0x7f07000f
-			public const int agentWebView = 2131165199;
-			
-			// aapt resource value: 0x7f070002
-			public const int blobImageView = 2131165186;
-			
-			// aapt resource value: 0x7f070003
-			public const int blobTextView = 2131165187;
-			
-			// aapt resource value: 0x7f070004
-			public const int blobs = 2131165188;
-			
 			// aapt resource value: 0x7f070001
-			public const int containers = 2131165185;
-			
-			// aapt resource value: 0x7f07000a
-			public const int goto_blobs = 2131165194;
-			
-			// aapt resource value: 0x7f07000c
-			public const int goto_queues = 2131165196;
-			
-			// aapt resource value: 0x7f07000b
-			public const int goto_tables = 2131165195;
-			
-			// aapt resource value: 0x7f070005
-			public const int homeimage = 2131165189;
-			
-			// aapt resource value: 0x7f070006
-			public const int hometitle = 2131165190;
-			
-			// aapt resource value: 0x7f070007
-			public const int login = 2131165191;
+			public const int accounts = 2131165185;
 			
 			// aapt resource value: 0x7f070010
-			public const int logout = 2131165200;
+			public const int agentWebView = 2131165200;
 			
-			// aapt resource value: 0x7f070009
-			public const int messages = 2131165193;
+			// aapt resource value: 0x7f070003
+			public const int blobImageView = 2131165187;
 			
-			// aapt resource value: 0x7f070008
-			public const int queues = 2131165192;
+			// aapt resource value: 0x7f070004
+			public const int blobTextView = 2131165188;
 			
-			// aapt resource value: 0x7f07000e
-			public const int tablelayout = 2131165198;
+			// aapt resource value: 0x7f070005
+			public const int blobs = 2131165189;
+			
+			// aapt resource value: 0x7f070002
+			public const int containers = 2131165186;
+			
+			// aapt resource value: 0x7f07000b
+			public const int goto_blobs = 2131165195;
 			
 			// aapt resource value: 0x7f07000d
-			public const int tables = 2131165197;
+			public const int goto_queues = 2131165197;
+			
+			// aapt resource value: 0x7f07000c
+			public const int goto_tables = 2131165196;
+			
+			// aapt resource value: 0x7f070006
+			public const int homeimage = 2131165190;
+			
+			// aapt resource value: 0x7f070007
+			public const int hometitle = 2131165191;
+			
+			// aapt resource value: 0x7f070008
+			public const int login = 2131165192;
+			
+			// aapt resource value: 0x7f070011
+			public const int logout = 2131165201;
+			
+			// aapt resource value: 0x7f07000a
+			public const int messages = 2131165194;
+			
+			// aapt resource value: 0x7f070000
+			public const int progress = 2131165184;
+			
+			// aapt resource value: 0x7f070009
+			public const int queues = 2131165193;
+			
+			// aapt resource value: 0x7f07000f
+			public const int tablelayout = 2131165199;
+			
+			// aapt resource value: 0x7f07000e
+			public const int tables = 2131165198;
 			
 			static Id()
 			{

@@ -1,16 +1,10 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Akavache;
 using Android.App;
-using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
 using Android.Widget;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -22,6 +16,7 @@ namespace AzureStorageBrowser.Activities
     {
         CloudBlobClient blobClient;
         ListView containersListView;
+        ProgressBar progressBar;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -42,12 +37,12 @@ namespace AzureStorageBrowser.Activities
             blobClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
             containersListView = FindViewById<ListView>(Resource.Id.containers);
+            progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
 
             BindContainerClick($"{account.Id}/containers");
             await BindContainersAsync($"{account.Id}/containers");
             await RefreshContainersAsync($"{account.Id}/containers");
             await BindContainersAsync($"{account.Id}/containers");
-
         }
 
         private void BindContainerClick(string id)
@@ -77,6 +72,7 @@ namespace AzureStorageBrowser.Activities
             } while (continuationToken != null);
 
             await BlobCache.LocalMachine.InsertObject(id, containers.ToArray());
+            progressBar.Visibility = Android.Views.ViewStates.Gone;
         }
 
         private async Task BindContainersAsync(string id)
@@ -93,7 +89,10 @@ namespace AzureStorageBrowser.Activities
                         containers.ToArray());
                 }
             }
-            catch(KeyNotFoundException){}
+            catch(KeyNotFoundException)
+            {
+                progressBar.Visibility = Android.Views.ViewStates.Visible;
+            }
         }
     }
 }
