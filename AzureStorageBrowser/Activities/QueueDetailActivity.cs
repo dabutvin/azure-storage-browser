@@ -6,13 +6,14 @@ using Android.App;
 using Android.OS;
 using Android.Widget;
 using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace AzureStorageBrowser.Activities
 {
     [Activity]
     public class QueueDetailActivity : BaseActivity
     {
+        ProgressBar progressBar;
+
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -21,6 +22,8 @@ namespace AzureStorageBrowser.Activities
             ActionBar.SetDisplayHomeAsUpEnabled(true);
 
             SetContentView(Resource.Layout.QueueDetail);
+
+            progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var queueName = await BlobCache.LocalMachine.GetObject<string>("selectedQueue");
@@ -37,6 +40,13 @@ namespace AzureStorageBrowser.Activities
             var messagesListView = FindViewById<ListView>(Resource.Id.messages);
 
             var messages = await queue.PeekMessagesAsync(32);
+
+            progressBar.Visibility = Android.Views.ViewStates.Gone;
+            if (messages.Any() == false)
+            {
+                var emptyMessage = FindViewById<TextView>(Resource.Id.empty);
+                emptyMessage.Visibility = Android.Views.ViewStates.Visible;
+            }
 
             messagesListView.Adapter = new ArrayAdapter<string>(this,
                                                                 Android.Resource.Layout.SimpleListItem1,

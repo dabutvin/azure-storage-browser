@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reactive.Linq;
 using Akavache;
 using Android.App;
@@ -12,6 +13,9 @@ namespace AzureStorageBrowser.Activities
     [Activity]
     public class TableDetailActivity : BaseActivity
     {
+        ProgressBar progressBar;
+        TableLayout tableLayout;
+
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -20,6 +24,9 @@ namespace AzureStorageBrowser.Activities
             ActionBar.SetDisplayHomeAsUpEnabled(true);
 
             SetContentView(Resource.Layout.TableDetail);
+
+            progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
+            tableLayout = FindViewById<TableLayout>(Resource.Id.tablelayout);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var tableName = await BlobCache.LocalMachine.GetObject<string>("selectedTable");
@@ -33,36 +40,45 @@ namespace AzureStorageBrowser.Activities
 
             var table = tableClient.GetTableReference(tableName);
 
-            var tableLayout = FindViewById<TableLayout>(Resource.Id.tablelayout);
-
-            var header = new TableRow(this);
-
-            var partitionKey = new TextView(this);
-            partitionKey.Text = "PARTITION KEY";
-
-            var rowKey = new TextView(this);
-            rowKey.Text = "ROW KEY";
-
-            header.AddView(partitionKey);
-            header.AddView(rowKey);
-
-            tableLayout.AddView(header);
-
             var rows = await table.ExecuteQuerySegmentedAsync(new TableQuery(), null);
-            foreach (var row in rows)
+
+            progressBar.Visibility = Android.Views.ViewStates.Gone;
+
+            if (rows.Any() == false)
             {
-                var tableRow = new TableRow(this);
+                var emptyMessage = FindViewById<TextView>(Resource.Id.empty);
+                emptyMessage.Visibility = Android.Views.ViewStates.Visible;
+            }
+            else
+            {
+                var header = new TableRow(this);
 
-                var partitionKeyValue = new TextView(this);
-                partitionKeyValue.Text = row.PartitionKey;
+                var partitionKey = new TextView(this);
+                partitionKey.Text = "PARTITION KEY";
 
-                var rowKeyValue = new TextView(this);
-                rowKeyValue.Text = row.RowKey;
+                var rowKey = new TextView(this);
+                rowKey.Text = "ROW KEY";
 
-                tableRow.AddView(partitionKeyValue);
-                tableRow.AddView(rowKeyValue);
+                header.AddView(partitionKey);
+                header.AddView(rowKey);
 
-                tableLayout.AddView(tableRow);
+                tableLayout.AddView(header);
+
+                foreach (var row in rows)
+                {
+                    var tableRow = new TableRow(this);
+
+                    var partitionKeyValue = new TextView(this);
+                    partitionKeyValue.Text = row.PartitionKey;
+
+                    var rowKeyValue = new TextView(this);
+                    rowKeyValue.Text = row.RowKey;
+
+                    tableRow.AddView(partitionKeyValue);
+                    tableRow.AddView(rowKeyValue);
+
+                    tableLayout.AddView(tableRow);
+                }
             }
         }
     }

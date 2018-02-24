@@ -5,6 +5,20 @@
     android:layout_height="match_parent"
     android:minWidth="25px"
     android:minHeight="25px">
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/empty"
+        android:visibility="gone"
+        android:text=":(  nothing here"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="40dp"
+        android:layout_marginTop="50dp" />
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
