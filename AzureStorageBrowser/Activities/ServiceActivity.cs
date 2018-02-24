@@ -23,7 +23,7 @@ namespace AzureStorageBrowser.Activities
             SetContentView(Resource.Layout.Service);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
-            Title = $"{account.Name} Services";
+            Title = $"{account.Name}";
 
             blobButton = FindViewById<Button>(Resource.Id.goto_blobs);
             queueButton = FindViewById<Button>(Resource.Id.goto_queues);
