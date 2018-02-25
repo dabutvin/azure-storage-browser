@@ -126,7 +126,6 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AuthToken.cs" />
-    <Compile Include="AccountsListAdapter.cs" />
     <Compile Include="Activities\MainActivity.cs" />
     <Compile Include="Activities\BaseActivity.cs" />
     <Compile Include="Activities\BlobActivity.cs" />
@@ -142,6 +141,8 @@
     <Compile Include="StorageExtensions.cs" />
     <Compile Include="Activities\AccountActivity.cs" />
     <Compile Include="Activities\ServiceActivity.cs" />
+    <Compile Include="SubscriptionsListAdapter.cs" />
+    <Compile Include="AccountClickHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -169,6 +170,7 @@
     <AndroidResource Include="Resources\layout\Service.axml" />
     <AndroidResource Include="Resources\drawable\service_button.xml" />
     <AndroidResource Include="Resources\values\Styles.xml" />
+    <AndroidResource Include="Resources\layout\SubscriptionListViewItem.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

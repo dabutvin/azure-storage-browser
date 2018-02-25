@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reactive.Linq;
@@ -7,14 +6,13 @@ using System.Threading.Tasks;
 using Akavache;
 using Android.App;
 using Android.Widget;
-using static Android.Widget.AdapterView;
 
 namespace AzureStorageBrowser.Activities
 {
     [Activity(Label = "Accounts")]
     public class AccountActivity : BaseActivity
     {
-        ListView accountsListView;
+        ExpandableListView subscriptionsListView;
         ProgressBar progressBar;
 
         protected override async void OnCreate(Android.OS.Bundle savedInstanceState)
@@ -23,15 +21,15 @@ namespace AzureStorageBrowser.Activities
 
             SetContentView(Resource.Layout.Account);
 
-            accountsListView = FindViewById<ListView>(Resource.Id.accounts);
+            subscriptionsListView = FindViewById<ExpandableListView>(Resource.Id.subscriptions);
             progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
 
             try
             {
-                var cachedAccounts = await BlobCache.LocalMachine.GetObject<Account[]>("accounts");
-                if (cachedAccounts != null)
+                var cachedSubscriptions = await BlobCache.LocalMachine.GetObject<Subscription[]>("subscriptions");
+                if (cachedSubscriptions != null)
                 {
-                    accountsListView.Adapter = new AccountsListAdapter(this, cachedAccounts);
+                    subscriptionsListView.SetAdapter(new SubscriptionsListAdapter(this, cachedSubscriptions));
                 }
             }
             catch (KeyNotFoundException)
@@ -39,55 +37,64 @@ namespace AzureStorageBrowser.Activities
                 progressBar.Visibility = Android.Views.ViewStates.Visible;
             }
 
-            accountsListView.ItemClick += async delegate(object sender, ItemClickEventArgs e)
-            {
-                var cachedAccounts = await BlobCache.LocalMachine.GetObject<Account[]>("accounts");
-
-                await BlobCache.LocalMachine.InsertObject(
-                    "selectedAccount",
-                    cachedAccounts[e.Position]);
-
-                StartActivity(typeof(ServiceActivity));
-            };
+            subscriptionsListView.SetOnChildClickListener(new AccountClickHandler());
 
             var token = await BlobCache.LocalMachine.GetObject<string>("token");
-            var accounts = await FetchAccounts(token);
+            var subscriptions = await FetchSubscriptionsAsync(token);
 
-            await BlobCache.LocalMachine.InsertObject("accounts", accounts);
+            await BlobCache.LocalMachine.InsertObject("subscriptions", subscriptions);
 
             progressBar.Visibility = Android.Views.ViewStates.Gone;
-            accountsListView.Adapter = new AccountsListAdapter(this, accounts);
 
-            if(accounts.Any() == false)
+            if (subscriptions.Any() == false)
             {
                 var emptyMessage = FindViewById<TextView>(Resource.Id.empty);
                 emptyMessage.Visibility = Android.Views.ViewStates.Visible;
             }
+            else
+            {
+                subscriptionsListView.SetAdapter(new SubscriptionsListAdapter(this, subscriptions));
+            }
         }
 
-        private async Task<Account[]> FetchAccounts(string token)
+        private async Task<Subscription[]> FetchSubscriptionsAsync(string token)
         {
             var httpClient = new HttpClient();
 
-            var subscriptions = await httpClient.GetSubscriptions(token);
+            var subscriptionResources = await httpClient.GetSubscriptions(token);
+            var subscriptions = new List<Subscription>();
 
-            var accounts = new List<Account>();
-
-            foreach (var subscription in subscriptions)
+            foreach (var subscriptionResource in subscriptionResources)
             {
-                var resources = await httpClient.GetStorageResources(token, subscription.SubscriptionId);
-
-                accounts.AddRange(await resources.ForEachAsync(async resource =>
+                var subscription = new Subscription
                 {
-                    var key = await httpClient.GetStorageKey(token, resource.Id);
-                    return new Account
-                    {
-                        Name = resource.Name,
-                        Id = resource.Id,
-                        Key = key,
-                    };
-                }));
+                    Id = subscriptionResource.SubscriptionId,
+                    Name = subscriptionResource.DisplayName,
+                    Accounts = await FetchAccountsAsync(subscriptionResource.SubscriptionId, token),
+                };
+
+                subscriptions.Add(subscription);
             }
+
+            return subscriptions.ToArray();
+        }
+
+        private async Task<Account[]> FetchAccountsAsync(string subscriptionId, string token)
+        {
+            var httpClient = new HttpClient();
+
+            var resources = await httpClient.GetStorageResources(token, subscriptionId);
+
+            var accounts = await resources.ForEachAsync(async resource =>
+            {
+                var key = await httpClient.GetStorageKey(token, resource.Id);
+                return new Account
+                {
+                    Name = resource.Name,
+                    Id = resource.Id,
+                    Key = key,
+                };
+            });
 
             return accounts.ToArray();
         }
