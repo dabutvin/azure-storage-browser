@@ -252,6 +252,9 @@ namespace AzureStorageBrowser
 		public partial class Style
 		{
 			
+			// aapt resource value: 0x7f060002
+			public const int loginbutton = 2131099650;
+			
 			// aapt resource value: 0x7f060000
 			public const int servicebutton = 2131099648;
 			

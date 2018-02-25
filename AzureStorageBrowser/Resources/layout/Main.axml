@@ -28,10 +28,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login"
-            android:background="#ff616161"
-            android:textColor="#ffffffff"
-            android:textSize="18sp"
-            android:paddingTop="5sp"
-            android:paddingBottom="5sp" />
+            style="@style/loginbutton" />
     </LinearLayout>
 </LinearLayout>
