@@ -48,9 +48,21 @@ namespace AzureStorageBrowser.Activities
                 emptyMessage.Visibility = Android.Views.ViewStates.Visible;
             }
 
+            var displayMessages = messages.Select(x =>
+            {
+                try
+                {
+                    return x.AsString;
+                }
+                catch
+                {
+                    return "[ERROR] Unable to read message";
+                }
+            }).ToArray();
+
             messagesListView.Adapter = new ArrayAdapter<string>(this,
                                                                 Android.Resource.Layout.SimpleListItem1,
-                                                                messages.Select(x => x.AsString).ToArray());
+                                                                displayMessages);
         }
     }
 }
