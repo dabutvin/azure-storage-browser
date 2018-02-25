@@ -67,11 +67,8 @@ namespace AzureStorageBrowser
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f080002
-			public const int accounts = 2131230722;
-			
-			// aapt resource value: 0x7f080011
-			public const int agentWebView = 2131230737;
+			// aapt resource value: 0x7f080012
+			public const int agentWebView = 2131230738;
 			
 			// aapt resource value: 0x7f080004
 			public const int blobImageView = 2131230724;
@@ -106,8 +103,8 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f080009
 			public const int login = 2131230729;
 			
-			// aapt resource value: 0x7f080012
-			public const int logout = 2131230738;
+			// aapt resource value: 0x7f080013
+			public const int logout = 2131230739;
 			
 			// aapt resource value: 0x7f08000b
 			public const int messages = 2131230731;
@@ -118,11 +115,17 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f08000a
 			public const int queues = 2131230730;
 			
-			// aapt resource value: 0x7f080010
-			public const int tablelayout = 2131230736;
-			
 			// aapt resource value: 0x7f08000f
-			public const int tables = 2131230735;
+			public const int subscriptionname = 2131230735;
+			
+			// aapt resource value: 0x7f080002
+			public const int subscriptions = 2131230722;
+			
+			// aapt resource value: 0x7f080011
+			public const int tablelayout = 2131230737;
+			
+			// aapt resource value: 0x7f080010
+			public const int tables = 2131230736;
 			
 			static Id()
 			{
@@ -159,13 +162,16 @@ namespace AzureStorageBrowser
 			public const int Service = 2130968582;
 			
 			// aapt resource value: 0x7f040007
-			public const int Table = 2130968583;
+			public const int SubscriptionListViewItem = 2130968583;
 			
 			// aapt resource value: 0x7f040008
-			public const int TableDetail = 2130968584;
+			public const int Table = 2130968584;
 			
 			// aapt resource value: 0x7f040009
-			public const int WebAuthenticationBroker = 2130968585;
+			public const int TableDetail = 2130968585;
+			
+			// aapt resource value: 0x7f04000a
+			public const int WebAuthenticationBroker = 2130968586;
 			
 			static Layout()
 			{
@@ -248,6 +254,9 @@ namespace AzureStorageBrowser
 			
 			// aapt resource value: 0x7f060000
 			public const int servicebutton = 2131099648;
+			
+			// aapt resource value: 0x7f060001
+			public const int subscriptionname = 2131099649;
 			
 			static Style()
 			{
