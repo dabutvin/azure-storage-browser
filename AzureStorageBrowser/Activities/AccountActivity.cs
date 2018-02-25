@@ -30,6 +30,7 @@ namespace AzureStorageBrowser.Activities
                 if (cachedSubscriptions != null)
                 {
                     subscriptionsListView.SetAdapter(new SubscriptionsListAdapter(this, cachedSubscriptions));
+                    subscriptionsListView.ExpandGroup(0);
                 }
             }
             catch (KeyNotFoundException)
@@ -54,6 +55,7 @@ namespace AzureStorageBrowser.Activities
             else
             {
                 subscriptionsListView.SetAdapter(new SubscriptionsListAdapter(this, subscriptions));
+                subscriptionsListView.ExpandGroup(0);
             }
         }
 
