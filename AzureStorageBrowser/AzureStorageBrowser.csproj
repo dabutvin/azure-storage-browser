@@ -164,13 +164,13 @@
     <AndroidResource Include="Resources\layout\TableDetail.axml" />
     <AndroidResource Include="Resources\layout\QueueDetail.axml" />
     <AndroidResource Include="Resources\layout\BlobDetail.axml" />
-    <AndroidResource Include="Resources\drawable\azure_storage_browser.jpg" />
     <AndroidResource Include="Resources\menu\Settings.xml" />
     <AndroidResource Include="Resources\layout\Account.axml" />
     <AndroidResource Include="Resources\layout\Service.axml" />
     <AndroidResource Include="Resources\drawable\service_button.xml" />
     <AndroidResource Include="Resources\values\Styles.xml" />
     <AndroidResource Include="Resources\layout\SubscriptionListViewItem.axml" />
+    <AndroidResource Include="Resources\drawable\azure_storage_browser1.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

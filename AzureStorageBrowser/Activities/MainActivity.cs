@@ -17,6 +17,7 @@ namespace AzureStorageBrowser.Activities
         Button loginButton;
         ImageView homeImage;
         TextView homeTitle;
+        TextView loggedInAsText;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -31,13 +32,16 @@ namespace AzureStorageBrowser.Activities
             loginButton = FindViewById<Button>(Resource.Id.login);
             homeImage = FindViewById<ImageView>(Resource.Id.homeimage);
             homeTitle = FindViewById<TextView>(Resource.Id.hometitle);
+            loggedInAsText = FindViewById<TextView>(Resource.Id.loggedinas);
 
             try
             {
                 var loggedInUser = await BlobCache.LocalMachine.GetObject<string>("loggedInUser");
                 if (!string.IsNullOrEmpty(loggedInUser))
                 {
-                    loginButton.Text = $"Continue as {loggedInUser}";
+                    loginButton.Text = $"Continue";
+                    loggedInAsText.Text = $"Logged in as {loggedInUser}";
+                    loggedInAsText.Visibility = ViewStates.Visible;
                 }
             }
             catch(KeyNotFoundException){}
@@ -47,6 +51,7 @@ namespace AzureStorageBrowser.Activities
             {
                 homeImage.Visibility = ViewStates.Gone;
                 loginButton.Visibility = ViewStates.Gone;
+                loggedInAsText.Visibility = ViewStates.Gone;
                 homeTitle.Visibility = ViewStates.Gone;
 
                 var token = await this.GetTokenAsync();

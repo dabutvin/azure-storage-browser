@@ -3,31 +3,45 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ImageView
-        android:id="@+id/homeimage"
-        android:src="@drawable/azure_storage_browser"
+    <LinearLayout
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:overScrollMode="never"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2" />
+        android:layout_height="0dp">
+        <ImageView
+            android:id="@+id/homeimage"
+            android:scaleType="centerCrop"
+            android:src="@drawable/azure_storage_browser1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <LinearLayout
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_width="match_parent"
         android:gravity="center"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
         <TextView
             android:id="@+id/hometitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
+            android:textColor="@android:color/background_dark"
             android:text="AZURE STORAGE BROWSER"
             android:paddingBottom="28sp" />
         <Button
+            style="@android:style/Widget.Material.Button.Colored"
             android:visibility="invisible"
             android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login"
-            style="@style/loginbutton" />
+            android:text="@string/login" />
+        <TextView
+            android:visibility="invisible"
+            android:id="@+id/loggedinas"
+            android:layout_marginTop="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>
