@@ -1,19 +1,14 @@
-var http = require('http');
-var fs = require('fs');
-var path = require('path');
+const express = require('express');
+const app = express();
+const fs = require('fs');
 
-http.createServer(function (request, response) {
-    console.log('request ', request.url);
 
-    fs.readFile('./index.html', function(error, content) {
-        if (error) {
-            response.writeHead(500);
-            response.end('Sorry :(: ' + error.code);
-            response.end();
-        } else {
-            response.writeHead(200, { 'Content-Type': 'text/html' });
-            response.end(content, 'utf-8');
-        }
-    });
+app.use(express.static('public'));
 
-}).listen(process.env.PORT || 3000);
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
+
+app.listen(process.env.PORT || 3000, () => {
+    console.log('listening on port ' + (process.env.PORT || 3000));
+});
