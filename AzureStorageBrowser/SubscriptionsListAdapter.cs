@@ -25,7 +25,6 @@ namespace AzureStorageBrowser
         public override long GetChildId(int groupPosition, int childPosition) => childPosition;
         public override int GetChildrenCount(int groupPosition) => _subscriptions[groupPosition].Accounts.Length;
         public override long GetGroupId(int groupPosition) => groupPosition;
-        public override bool IsChildSelectable(int groupPosition, int childPosition) => true;
 
         public override View GetGroupView(int groupPosition, bool isExpanded, View convertView, ViewGroup parent)
         {
@@ -56,6 +55,17 @@ namespace AzureStorageBrowser
 
             return view;
         }
+
+        public override bool IsChildSelectable(int groupPosition, int childPosition)
+        {
+            if(_subscriptions[groupPosition].Accounts[childPosition].Id == "empty")
+            {
+                return false;    
+            }
+
+            return true;   
+        }
+
 
         public override Java.Lang.Object GetGroup(int groupPosition)
         {

@@ -98,6 +98,18 @@ namespace AzureStorageBrowser.Activities
                 };
             });
 
+            if(accounts.Any() == false)
+            {
+                return new[]
+                {
+                    new Account
+                    {
+                        Name = "No storage accounts :(",
+                        Id = "empty",
+                    }
+                };
+            }
+
             return accounts.ToArray();
         }
     }
