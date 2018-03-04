@@ -4,37 +4,94 @@
     <title>Azure Storage Browser</title>
     <meta name="description" content="The mobile first storage explorer for Azure Storage.">
     <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald" />
     <style type="text/css">
         html,body {
             padding: 0;
             margin: 0;
             text-align: center;
-        }
-
-        img {
-            position: fixed;
-            top: 100px;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 100%;
-            max-height: 100%;
-            margin: auto;
-            overflow: auto;
-            z-index: -999;
+            font-family: 'Oswald', cursive;
+            background-color: #000;
         }
 
         h1 {
-            font-size: 48px;
+            font-size: 63px;
+            font-weight: normal;
+            margin: 0;
+            padding: 5px 0 0 50px;
+        }
+
+        p {
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        .content {
+            display: none;
+        }
+
+        .footer {
+            background-color: #000;
+            width: 100%;
+        }
+
+        @media (min-width: 600px) {
+            html, body {
+                background-image: url('/azure-storage-browser.jpg');
+                background-size: cover;
+                background-repeat: no-repeat;
+                color: #fff;
+            }
+
+            .content {
+                background-color: #000;
+                display: block;
+                opacity: .6;
+                position: absolute;
+                left: 0;
+                right: 0;
+            }
+
+            .footer {
+                position: absolute;
+                bottom: 0;
+                right: 15px;
+                margin-right: -15px;
+                text-align: right;
+                padding-right: 10px;
+            }
+
+            .mobile-only {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Azure Storage Browser</h1>
-    <p>The mobile first storage explorer for Azure Storage.</p>
-    <a href="https://github.com/dabutvin/azure-storage-browser">https://github.com/dabutvin/azure-storage-browser</a>
-    <img src="/azure-storage-browser.jpg" />
-    
+    <div class="content">
+        <h1>Azure Storage Browser</h1>
+    </div>
+
+    <a class="mobile-only" href="http://play.google.com/store/apps/details?id=com.dan.azure_storage_browser"><img src="/phone.png" alt="" /></a>
+
+    <div class="footer">
+        <p>
+            <a href="http://play.google.com/store/apps/details?id=com.dan.azure_storage_browser">Play store</a> ||
+            <a href="https://github.com/dabutvin/azure-storage-browser">GitHub</a> ||
+            <a href="http://danbut.com">danbut.com</a> ||
+            <a href="https://unsplash.com/@kwlf?utm_medium=referral&amp;utm_campaign=photographer-credit&amp;utm_content=creditBadge" target="_blank" rel="noopener noreferrer" title="Download free do whatever you want high-resolution photos from Kevin Wolf"><span style="display:inline-block;padding:2px 3px;"><svg xmlns="http://www.w3.org/2000/svg" style="height:12px;width:auto;position:relative;vertical-align:middle;top:-1px;fill:white;" viewBox="0 0 32 32"><title>unsplash-logo</title><path d="M20.8 18.1c0 2.7-2.2 4.8-4.8 4.8s-4.8-2.1-4.8-4.8c0-2.7 2.2-4.8 4.8-4.8 2.7.1 4.8 2.2 4.8 4.8zm11.2-7.4v14.9c0 2.3-1.9 4.3-4.3 4.3h-23.4c-2.4 0-4.3-1.9-4.3-4.3v-15c0-2.3 1.9-4.3 4.3-4.3h3.7l.8-2.3c.4-1.1 1.7-2 2.9-2h8.6c1.2 0 2.5.9 2.9 2l.8 2.4h3.7c2.4 0 4.3 1.9 4.3 4.3zm-8.6 7.5c0-4.1-3.3-7.5-7.5-7.5-4.1 0-7.5 3.4-7.5 7.5s3.3 7.5 7.5 7.5c4.2-.1 7.5-3.4 7.5-7.5z"></path></svg></span><span style="display:inline-block;padding:2px 3px;">Kevin Wolf</span></a></p>
+    </div>
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-105332493-2"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
