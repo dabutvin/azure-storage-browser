@@ -94,7 +94,9 @@ namespace AzureStorageBrowser.Activities
 
             var accounts = await resources.ForEachAsync(async resource =>
             {
-                var key = await httpClient.GetStorageKey(token, resource.Id);
+                var key = await httpClient.GetStorageKey(token, resource.Id)
+                       ?? await httpClient.GetStorageKey(token, resource.Id); // simple retry
+                
                 return new Account
                 {
                     Name = resource.Name,
