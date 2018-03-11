@@ -54,6 +54,8 @@ namespace AzureStorageBrowser.Activities
                 loggedInAsText.Visibility = ViewStates.Gone;
                 homeTitle.Visibility = ViewStates.Gone;
 
+                Analytics.TrackEvent("main-login-clicked");
+
                 var token = await this.GetTokenAsync();
 
                 if (token == null)

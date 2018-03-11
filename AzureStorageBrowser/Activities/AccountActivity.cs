@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Akavache;
 using Android.App;
 using Android.Widget;
+using Microsoft.AppCenter.Analytics;
 
 namespace AzureStorageBrowser.Activities
 {
@@ -42,6 +43,10 @@ namespace AzureStorageBrowser.Activities
 
             var token = await BlobCache.LocalMachine.GetObject<string>("token");
             var subscriptions = await FetchSubscriptionsAsync(token);
+
+            Analytics.TrackEvent(
+                "account-subscriptions-fetched",
+                new Dictionary<string, string> { ["count"] = subscriptions.Length.ToString() });
 
             await BlobCache.LocalMachine.InsertObject("subscriptions", subscriptions);
 
