@@ -15,9 +15,8 @@ namespace AzureStorageBrowser.Activities
     public class MainActivity : BaseActivity
     {
         Button loginButton;
-        ImageView homeImage;
-        TextView homeTitle;
         TextView loggedInAsText;
+        ProgressBar progressBar;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -30,9 +29,8 @@ namespace AzureStorageBrowser.Activities
             AppCenter.Start("3c0813dd-30a8-4215-987d-68fc759340e0", typeof(Analytics), typeof(Crashes));
 
             loginButton = FindViewById<Button>(Resource.Id.login);
-            homeImage = FindViewById<ImageView>(Resource.Id.homeimage);
-            homeTitle = FindViewById<TextView>(Resource.Id.hometitle);
             loggedInAsText = FindViewById<TextView>(Resource.Id.loggedinas);
+            progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
 
             try
             {
@@ -49,14 +47,12 @@ namespace AzureStorageBrowser.Activities
 
             loginButton.Click += async delegate
             {
-                homeImage.Visibility = ViewStates.Gone;
-                loginButton.Visibility = ViewStates.Gone;
-                loggedInAsText.Visibility = ViewStates.Gone;
-                homeTitle.Visibility = ViewStates.Gone;
-
+                progressBar.Visibility = ViewStates.Visible;
                 Analytics.TrackEvent("main-login-clicked");
 
                 var token = await this.GetTokenAsync();
+
+                progressBar.Visibility = ViewStates.Invisible;
 
                 if (token == null)
                 {

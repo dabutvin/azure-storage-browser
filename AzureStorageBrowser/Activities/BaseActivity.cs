@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Android.App;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace AzureStorageBrowser.Activities
@@ -21,6 +22,7 @@ namespace AzureStorageBrowser.Activities
                     Finish();
                     break;
                 case Resource.Id.logout:
+                    Analytics.TrackEvent("global-clicked-logout");
                     Task.Run(async () => { await AuthToken.LogoutAsync(); }).Wait();
                     Finish();
                     StartActivity(typeof(MainActivity));
