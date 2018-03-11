@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Linq;
 using Akavache;
 using Android.App;
@@ -13,6 +12,8 @@ namespace AzureStorageBrowser.Activities
     public class QueueDetailActivity : BaseActivity
     {
         ProgressBar progressBar;
+        TextView pageCount;
+        ListView messagesListView;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -24,6 +25,8 @@ namespace AzureStorageBrowser.Activities
             SetContentView(Resource.Layout.QueueDetail);
 
             progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
+            pageCount = FindViewById<TextView>(Resource.Id.pagecount);
+            messagesListView = FindViewById<ListView>(Resource.Id.messages);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var queueName = await BlobCache.LocalMachine.GetObject<string>("selectedQueue");
@@ -33,19 +36,24 @@ namespace AzureStorageBrowser.Activities
             var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName={account.Name};AccountKey={account.Key}");
 
             var queueClient = storageAccount.CreateCloudQueueClient();
-
-            var queue = queueClient.GetQueueReference(queueName);
             queueClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
-            var messagesListView = FindViewById<ListView>(Resource.Id.messages);
+            var queue = queueClient.GetQueueReference(queueName);
+            await queue.FetchAttributesAsync();
 
             var messages = await queue.PeekMessagesAsync(32);
 
             progressBar.Visibility = Android.Views.ViewStates.Gone;
+
             if (messages.Any() == false)
             {
                 var emptyMessage = FindViewById<TextView>(Resource.Id.empty);
                 emptyMessage.Visibility = Android.Views.ViewStates.Visible;
+                pageCount.Text = "0 / 0";
+            }
+            else
+            {
+                pageCount.Text = $"{messages.Count()} / {queue.ApproximateMessageCount}";
             }
 
             var displayMessages = messages.Select(x =>
