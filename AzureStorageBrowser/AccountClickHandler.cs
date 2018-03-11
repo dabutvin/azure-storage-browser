@@ -4,6 +4,7 @@ using Akavache;
 using Android.Views;
 using Android.Widget;
 using AzureStorageBrowser.Activities;
+using Microsoft.AppCenter.Analytics;
 using static Android.Widget.ExpandableListView;
 
 namespace AzureStorageBrowser
@@ -12,6 +13,8 @@ namespace AzureStorageBrowser
     {
         public bool OnChildClick(ExpandableListView parent, View clickedView, int groupPosition, int childPosition, long id)
         {
+            Analytics.TrackEvent("account-account-clicked");
+
             BlobCache.LocalMachine.GetObject<Subscription[]>("subscriptions")
                      .Subscribe(subscriptions =>
             {

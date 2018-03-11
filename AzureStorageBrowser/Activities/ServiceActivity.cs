@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using Akavache;
 using Android.App;
 using Android.Widget;
+using Microsoft.AppCenter.Analytics;
 
 namespace AzureStorageBrowser.Activities
 {
@@ -31,16 +32,19 @@ namespace AzureStorageBrowser.Activities
 
             blobButton.Click += delegate
             {
+                Analytics.TrackEvent("service-blob-clicked");
                 StartActivity(typeof(BlobActivity));
             };
 
             queueButton.Click += delegate
             {
+                Analytics.TrackEvent("service-queue-clicked");
                 StartActivity(typeof(QueueActivity));
             };
 
             tableButton.Click += delegate
             {
+                Analytics.TrackEvent("service-table-clicked");
                 StartActivity(typeof(TableActivity));
             };
         }

@@ -7,6 +7,7 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
@@ -67,6 +68,8 @@ namespace AzureStorageBrowser.Activities
 
                 blobsListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
                 {
+                    Analytics.TrackEvent("blobdetail-blob-clicked");
+
                     var blob = blobs.ElementAt(e.Position);
 
                     if (blob.IsImage())

@@ -5,6 +5,8 @@ using Android.App;
 using Android.OS;
 using Android.Widget;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.AppCenter.Analytics;
+using System.Collections.Generic;
 
 namespace AzureStorageBrowser.Activities
 {
@@ -55,6 +57,10 @@ namespace AzureStorageBrowser.Activities
             {
                 pageCount.Text = $"{messages.Count()} / {queue.ApproximateMessageCount}";
             }
+
+            Analytics.TrackEvent(
+                "queuedetail-messages-fetched",
+                new Dictionary<string, string> { ["count"] = messages.Count().ToString() });
 
             var displayMessages = messages.Select(x =>
             {

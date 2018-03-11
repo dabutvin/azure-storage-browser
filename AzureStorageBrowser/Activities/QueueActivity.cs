@@ -6,6 +6,7 @@ using Akavache;
 using Android.App;
 using Android.OS;
 using Android.Widget;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 
@@ -51,6 +52,7 @@ namespace AzureStorageBrowser.Activities
             {
                 if (e.Position > -1)
                 {
+                    Analytics.TrackEvent("queue-queue-clicked");
                     var queues = await BlobCache.LocalMachine.GetObject<string[]>(id);
                     await BlobCache.LocalMachine.InsertObject("selectedQueue", queues[e.Position]);
                     StartActivity(typeof(QueueDetailActivity));
@@ -70,6 +72,10 @@ namespace AzureStorageBrowser.Activities
                 continuationToken = queueSegment.ContinuationToken;
 
             } while (continuationToken != null);
+
+            Analytics.TrackEvent(
+                "queue-queues-fetched",
+                new Dictionary<string, string> { ["count"] = queues.Count().ToString() });
 
             await BlobCache.LocalMachine.InsertObject(id, queues.ToArray());
             progressBar.Visibility = Android.Views.ViewStates.Gone;

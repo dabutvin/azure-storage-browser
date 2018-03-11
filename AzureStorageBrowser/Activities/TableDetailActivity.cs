@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using Akavache;
 using Android.App;
 using Android.OS;
 using Android.Widget;
+using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
@@ -80,6 +82,10 @@ namespace AzureStorageBrowser.Activities
                     tableLayout.AddView(tableRow);
                 }
             }
+
+            Analytics.TrackEvent(
+                "tabledetail-rows-fetched",
+                new Dictionary<string, string> { ["count"] = rows.Count().ToString() });
         }
     }
 }
