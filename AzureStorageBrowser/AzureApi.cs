@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AppCenter.Crashes;
 using Newtonsoft.Json;
 
 namespace AzureStorageBrowser
@@ -35,17 +37,25 @@ namespace AzureStorageBrowser
 
         public static async Task<string> GetStorageKey(this HttpClient httpClient, string token, string id)
         {
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            try
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var keysResponse = await httpClient.PostAsync(
-                $"https://management.azure.com/{id}/listKeys?api-version=2017-06-01",
-                new StringContent(""));
+                var keysResponse = await httpClient.PostAsync(
+                    $"https://management.azure.com/{id}/listKeys?api-version=2017-06-01",
+                    new StringContent(""));
 
-            var keysJson = await keysResponse.Content.ReadAsStringAsync();
+                var keysJson = await keysResponse.Content.ReadAsStringAsync();
 
-            var keys = JsonConvert.DeserializeObject<StorageKeyContract>(keysJson);
+                var keys = JsonConvert.DeserializeObject<StorageKeyContract>(keysJson);
 
-            return keys.Keys.First().Value;
+                return keys.Keys?.FirstOrDefault()?.Value;
+            }
+            catch(Exception ex)
+            {
+                Crashes.TrackError(ex);
+                return null;
+            }
         }
     }
 
