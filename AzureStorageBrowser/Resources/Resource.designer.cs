@@ -67,8 +67,8 @@ namespace AzureStorageBrowser
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f080014
-			public const int agentWebView = 2131230740;
+			// aapt resource value: 0x7f080012
+			public const int agentWebView = 2131230738;
 			
 			// aapt resource value: 0x7f080004
 			public const int blobImageView = 2131230724;
@@ -85,53 +85,47 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f080001
 			public const int empty = 2131230721;
 			
+			// aapt resource value: 0x7f08000c
+			public const int goto_blobs = 2131230732;
+			
 			// aapt resource value: 0x7f08000e
-			public const int goto_blobs = 2131230734;
-			
-			// aapt resource value: 0x7f080010
-			public const int goto_queues = 2131230736;
-			
-			// aapt resource value: 0x7f08000f
-			public const int goto_tables = 2131230735;
-			
-			// aapt resource value: 0x7f080007
-			public const int homeimage = 2131230727;
-			
-			// aapt resource value: 0x7f080008
-			public const int hometitle = 2131230728;
-			
-			// aapt resource value: 0x7f08000a
-			public const int loggedinas = 2131230730;
-			
-			// aapt resource value: 0x7f080009
-			public const int login = 2131230729;
-			
-			// aapt resource value: 0x7f080015
-			public const int logout = 2131230741;
+			public const int goto_queues = 2131230734;
 			
 			// aapt resource value: 0x7f08000d
-			public const int messages = 2131230733;
+			public const int goto_tables = 2131230733;
 			
-			// aapt resource value: 0x7f08000c
-			public const int pagecount = 2131230732;
+			// aapt resource value: 0x7f080008
+			public const int loggedinas = 2131230728;
+			
+			// aapt resource value: 0x7f080007
+			public const int login = 2131230727;
+			
+			// aapt resource value: 0x7f080013
+			public const int logout = 2131230739;
+			
+			// aapt resource value: 0x7f08000b
+			public const int messages = 2131230731;
+			
+			// aapt resource value: 0x7f08000a
+			public const int pagecount = 2131230730;
 			
 			// aapt resource value: 0x7f080000
 			public const int progress = 2131230720;
 			
-			// aapt resource value: 0x7f08000b
-			public const int queues = 2131230731;
+			// aapt resource value: 0x7f080009
+			public const int queues = 2131230729;
 			
-			// aapt resource value: 0x7f080011
-			public const int subscriptionname = 2131230737;
+			// aapt resource value: 0x7f08000f
+			public const int subscriptionname = 2131230735;
 			
 			// aapt resource value: 0x7f080002
 			public const int subscriptions = 2131230722;
 			
-			// aapt resource value: 0x7f080013
-			public const int tablelayout = 2131230739;
+			// aapt resource value: 0x7f080011
+			public const int tablelayout = 2131230737;
 			
-			// aapt resource value: 0x7f080012
-			public const int tables = 2131230738;
+			// aapt resource value: 0x7f080010
+			public const int tables = 2131230736;
 			
 			static Id()
 			{

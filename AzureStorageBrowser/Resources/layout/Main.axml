@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp">
         <ImageView
-            android:id="@+id/homeimage"
             android:scaleType="centerCrop"
             android:src="@drawable/azure_storage_browser1"
             android:layout_width="wrap_content"
@@ -23,20 +22,29 @@
         android:layout_width="match_parent"
         android:layout_height="0dp">
         <TextView
-            android:id="@+id/hometitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
             android:textColor="@android:color/background_dark"
             android:text="AZURE STORAGE BROWSER"
             android:paddingBottom="28sp" />
-        <Button
-            style="@android:style/Widget.Material.Button.Colored"
-            android:visibility="invisible"
-            android:id="@+id/login"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login" />
+            android:orientation="horizontal">
+            <Button
+                style="@android:style/Widget.Material.Button.Colored"
+                android:visibility="invisible"
+                android:id="@+id/login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login" />
+            <ProgressBar
+                android:id="@+id/progress"
+                android:visibility="invisible"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
         <TextView
             android:visibility="invisible"
             android:id="@+id/loggedinas"
