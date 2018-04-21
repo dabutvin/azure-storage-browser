@@ -5,6 +5,7 @@ using Akavache;
 using Android.App;
 using Android.Graphics;
 using Android.OS;
+using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
 using Microsoft.AppCenter.Analytics;
@@ -17,9 +18,14 @@ namespace AzureStorageBrowser.Activities
     [Activity]
     public class BlobDetailActivity : BaseActivity
     {
+        SwipeRefreshLayout refresher;
         ImageView imageView;
         TextView textView;
         ProgressBar progressBar;
+        ListView blobsListView;
+        TextView emptyMessage;
+        CloudBlobContainer container;
+        CloudBlockBlob[] blobs;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -30,9 +36,12 @@ namespace AzureStorageBrowser.Activities
 
             SetContentView(Resource.Layout.BlobDetail);
 
+            refresher = FindViewById<SwipeRefreshLayout>(Resource.Id.refresher);
             imageView = FindViewById<ImageView>(Resource.Id.blobImageView);
             textView = FindViewById<TextView>(Resource.Id.blobTextView);
             progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
+            blobsListView = FindViewById<ListView>(Resource.Id.blobs);
+            emptyMessage = FindViewById<TextView>(Resource.Id.empty);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var containerName = await BlobCache.LocalMachine.GetObject<string>("selectedContainer");
@@ -44,11 +53,58 @@ namespace AzureStorageBrowser.Activities
             var blobClient = storageAccount.CreateCloudBlobClient();
             blobClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
-            var container = blobClient.GetContainerReference(containerName);
+            container = blobClient.GetContainerReference(containerName);
 
-            var blobsListView = FindViewById<ListView>(Resource.Id.blobs);
+            blobsListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
+            {
+                Analytics.TrackEvent("blobdetail-blob-clicked");
 
-            var blobs = (await container.ListBlobsSegmentedAsync(null))
+                var blob = blobs.ElementAt(e.Position);
+
+                if (blob.IsImage())
+                {
+                    var bitmap = await GetBitmap(blob);
+
+                    imageView.SetImageBitmap(bitmap);
+                    imageView.Visibility = ViewStates.Visible;
+                }
+                else
+                {
+                    var text = await blob.DownloadTextAsync();
+                    var prettyText = ShittyPrettyPrint(text);
+                    textView.Text = prettyText;
+                    textView.Visibility = ViewStates.Visible;
+                }
+            };
+
+            imageView.Click += delegate
+            {
+                imageView.Visibility = ViewStates.Gone;
+                imageView.SetImageBitmap(null);
+            };
+
+            textView.Click += delegate
+            {
+                textView.Visibility = ViewStates.Gone;
+                textView.Text = null;
+            };
+
+            await LoadBlobs();
+
+            refresher.Refresh += async delegate
+            {
+                Analytics.TrackEvent("blobdetail-blobs-refreshed");
+                await LoadBlobs();
+                refresher.Refreshing = false;
+            };
+        }
+
+        private async Task LoadBlobs()
+        {
+            emptyMessage.Visibility = ViewStates.Gone;
+            progressBar.Visibility = ViewStates.Visible;
+
+            blobs = (await container.ListBlobsSegmentedAsync(null))
                 .Results.OfType<CloudBlockBlob>()
                 .ToArray();
 
@@ -56,8 +112,7 @@ namespace AzureStorageBrowser.Activities
 
             if (blobs.Any() == false)
             {
-                var emptyMessage = FindViewById<TextView>(Resource.Id.empty);
-                emptyMessage.Visibility = Android.Views.ViewStates.Visible;
+                emptyMessage.Visibility = ViewStates.Visible;
             }
             else
             {
@@ -65,40 +120,6 @@ namespace AzureStorageBrowser.Activities
                 this,
                 Android.Resource.Layout.SimpleListItem1,
                 blobs.Select(x => x.Name).ToArray());
-
-                blobsListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
-                {
-                    Analytics.TrackEvent("blobdetail-blob-clicked");
-
-                    var blob = blobs.ElementAt(e.Position);
-
-                    if (blob.IsImage())
-                    {
-                        var bitmap = await GetBitmap(blob);
-
-                        imageView.SetImageBitmap(bitmap);
-                        imageView.Visibility = ViewStates.Visible;
-                    }
-                    else
-                    {
-                        var text = await blob.DownloadTextAsync();
-                        var prettyText = ShittyPrettyPrint(text);
-                        textView.Text = prettyText;
-                        textView.Visibility = ViewStates.Visible;
-                    }
-                };
-
-                imageView.Click += delegate
-                {
-                    imageView.Visibility = ViewStates.Gone;
-                    imageView.SetImageBitmap(null);
-                };
-
-                textView.Click += delegate
-                {
-                    textView.Visibility = ViewStates.Gone;
-                    textView.Text = null;
-                };
             }
         }
 
