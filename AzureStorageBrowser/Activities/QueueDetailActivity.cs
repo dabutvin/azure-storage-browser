@@ -134,11 +134,13 @@ namespace AzureStorageBrowser.Activities
 
             if (item.ItemId == 1)
             {
+                Analytics.TrackEvent("queuedetail-message-deleted");
                 DeleteMessageAsync(message);
             }
 
             if (item.ItemId == 2)
             {
+                Analytics.TrackEvent("queuedetail-message-reprocessed");
                 ReprocessMessageAsync(message);
             }
 
