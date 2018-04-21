@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Akavache;
 using Android.App;
 using Android.OS;
 using Android.Support.V4.Widget;
+using Android.Views;
 using Android.Widget;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAzure.Storage;
@@ -22,6 +25,8 @@ namespace AzureStorageBrowser.Activities
         ListView messagesListView;
         TextView emptyMessage;
         CloudQueue queue;
+        CloudQueueMessage[] messages;
+        CloudQueueClient queueClient;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -45,7 +50,7 @@ namespace AzureStorageBrowser.Activities
 
             var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName={account.Name};AccountKey={account.Key}");
 
-            var queueClient = storageAccount.CreateCloudQueueClient();
+            queueClient = storageAccount.CreateCloudQueueClient();
             queueClient.DefaultRequestOptions.RetryPolicy = new Microsoft.WindowsAzure.Storage.RetryPolicies.ExponentialRetry();
 
             queue = queueClient.GetQueueReference(queueName);
@@ -58,6 +63,8 @@ namespace AzureStorageBrowser.Activities
                 await LoadQueueDetails();
                 refresher.Refreshing = false;
             };
+
+            RegisterForContextMenu(messagesListView);
         }
 
         private async Task LoadQueueDetails()
@@ -66,7 +73,7 @@ namespace AzureStorageBrowser.Activities
             progressBar.Visibility = Android.Views.ViewStates.Visible;
 
             await queue.FetchAttributesAsync();
-            var messages = await queue.PeekMessagesAsync(32);
+            messages = (await queue.PeekMessagesAsync(32)).ToArray();
 
             progressBar.Visibility = Android.Views.ViewStates.Gone;
 
@@ -99,6 +106,83 @@ namespace AzureStorageBrowser.Activities
             messagesListView.Adapter = new ArrayAdapter<string>(this,
                                                                 Android.Resource.Layout.SimpleListItem1,
                                                                 displayMessages);
+        }
+
+        public override void OnCreateContextMenu(IContextMenu menu, View v, IContextMenuContextMenuInfo menuInfo)
+        {
+            if(v.Id == messagesListView.Id)
+            {
+                var info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+
+                if (info.Position == 0) // Can only delete the first message without throwing off DQ count
+                {
+                    menu.Add(Menu.None, 1, 0, "Delete");
+
+                    if (queue.Name.EndsWith("-poison", StringComparison.Ordinal))
+                    {
+                        menu.Add(Menu.None, 2, 0, "Reprocess");
+                    }
+                }
+            }
+        }
+
+        public override bool OnContextItemSelected(IMenuItem item)
+        {
+            var info = (AdapterView.AdapterContextMenuInfo)item.MenuInfo;
+
+            var message = messages[info.Position];
+
+            if (item.ItemId == 1)
+            {
+                Analytics.TrackEvent("queuedetail-message-deleted");
+                DeleteMessageAsync(message);
+            }
+
+            if (item.ItemId == 2)
+            {
+                Analytics.TrackEvent("queuedetail-message-reprocessed");
+                ReprocessMessageAsync(message);
+            }
+
+            return true;
+        }
+
+        private async Task DeleteMessageAsync(CloudQueueMessage message)
+        {
+            try
+            {
+                var topMessage = await queue.GetMessageAsync(TimeSpan.FromSeconds(1), new QueueRequestOptions(), new OperationContext());
+
+                if(topMessage != null)
+                {
+                    if (topMessage.Id == message.Id)
+                    {
+                        await queue.DeleteMessageAsync(topMessage.Id, topMessage.PopReceipt);
+                    }
+                    else
+                    {
+                        // dequeued the wrong message :( someone else DQ'd it before we got a chance to
+                        // Wait 1 second for the DQ'd message to come back
+                        Thread.Sleep(1000);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // ignore
+            }
+
+            await LoadQueueDetails();
+        }
+
+        private async Task ReprocessMessageAsync(CloudQueueMessage message)
+        {
+            var destQueue = queueClient.GetQueueReference(queue.Name.Replace("-poison", ""));
+            if(await destQueue.ExistsAsync())
+            {
+                await destQueue.AddMessageAsync(new CloudQueueMessage(message.AsString));
+                await DeleteMessageAsync(message);
+            }
         }
     }
 }
