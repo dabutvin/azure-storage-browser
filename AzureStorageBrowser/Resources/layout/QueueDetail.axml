@@ -1,43 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/refresher"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:minWidth="25px"
+    android:minHeight="25px">
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:minWidth="25px"
-        android:minHeight="25px">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/pagecount"
-                android:gravity="right"
-                android:textSize="20dp"
-                android:padding="5dp"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent" />
-        </LinearLayout>
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_marginTop="50dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
         <TextView
-            android:id="@+id/empty"
-            android:visibility="gone"
-            android:text=":(  nothing here"
-            android:gravity="center"
-            android:layout_width="match_parent"
+            android:id="@+id/pagecount"
+            android:gravity="right"
+            android:textSize="20dp"
+            android:padding="5dp"
             android:layout_height="wrap_content"
-            android:textSize="40dp"
-            android:layout_marginTop="50dp" />
+            android:layout_width="match_parent" />
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/messages" />
-    </LinearLayout>
-</android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>
