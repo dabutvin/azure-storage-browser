@@ -253,26 +253,26 @@ namespace AzureStorageBrowser
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f0b0018
-			public const int action0 = 2131427352;
-			
-			// aapt resource value: 0x7f0b0015
-			public const int action_container = 2131427349;
-			
-			// aapt resource value: 0x7f0b001c
-			public const int action_divider = 2131427356;
+			// aapt resource value: 0x7f0b0019
+			public const int action0 = 2131427353;
 			
 			// aapt resource value: 0x7f0b0016
-			public const int action_image = 2131427350;
+			public const int action_container = 2131427350;
+			
+			// aapt resource value: 0x7f0b001d
+			public const int action_divider = 2131427357;
 			
 			// aapt resource value: 0x7f0b0017
-			public const int action_text = 2131427351;
+			public const int action_image = 2131427351;
 			
-			// aapt resource value: 0x7f0b0026
-			public const int actions = 2131427366;
+			// aapt resource value: 0x7f0b0018
+			public const int action_text = 2131427352;
 			
-			// aapt resource value: 0x7f0b0032
-			public const int agentWebView = 2131427378;
+			// aapt resource value: 0x7f0b0027
+			public const int actions = 2131427367;
+			
+			// aapt resource value: 0x7f0b0033
+			public const int agentWebView = 2131427379;
 			
 			// aapt resource value: 0x7f0b0006
 			public const int async = 2131427334;
@@ -289,11 +289,11 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f0b0007
 			public const int blocking = 2131427335;
 			
-			// aapt resource value: 0x7f0b0019
-			public const int cancel_action = 2131427353;
+			// aapt resource value: 0x7f0b001a
+			public const int cancel_action = 2131427354;
 			
-			// aapt resource value: 0x7f0b0021
-			public const int chronometer = 2131427361;
+			// aapt resource value: 0x7f0b0022
+			public const int chronometer = 2131427362;
 			
 			// aapt resource value: 0x7f0b000e
 			public const int containers = 2131427342;
@@ -301,29 +301,29 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f0b000c
 			public const int empty = 2131427340;
 			
-			// aapt resource value: 0x7f0b0028
-			public const int end_padder = 2131427368;
+			// aapt resource value: 0x7f0b0029
+			public const int end_padder = 2131427369;
 			
 			// aapt resource value: 0x7f0b0008
 			public const int forever = 2131427336;
 			
-			// aapt resource value: 0x7f0b002c
-			public const int goto_blobs = 2131427372;
+			// aapt resource value: 0x7f0b002d
+			public const int goto_blobs = 2131427373;
+			
+			// aapt resource value: 0x7f0b002f
+			public const int goto_queues = 2131427375;
 			
 			// aapt resource value: 0x7f0b002e
-			public const int goto_queues = 2131427374;
+			public const int goto_tables = 2131427374;
 			
-			// aapt resource value: 0x7f0b002d
-			public const int goto_tables = 2131427373;
+			// aapt resource value: 0x7f0b0024
+			public const int icon = 2131427364;
+			
+			// aapt resource value: 0x7f0b0028
+			public const int icon_group = 2131427368;
 			
 			// aapt resource value: 0x7f0b0023
-			public const int icon = 2131427363;
-			
-			// aapt resource value: 0x7f0b0027
-			public const int icon_group = 2131427367;
-			
-			// aapt resource value: 0x7f0b0022
-			public const int info = 2131427362;
+			public const int info = 2131427363;
 			
 			// aapt resource value: 0x7f0b0009
 			public const int italic = 2131427337;
@@ -334,65 +334,68 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f0b0001
 			public const int line3 = 2131427329;
 			
+			// aapt resource value: 0x7f0b0015
+			public const int loggedinas = 2131427349;
+			
 			// aapt resource value: 0x7f0b0014
-			public const int loggedinas = 2131427348;
+			public const int login = 2131427348;
 			
-			// aapt resource value: 0x7f0b0013
-			public const int login = 2131427347;
+			// aapt resource value: 0x7f0b0034
+			public const int logout = 2131427380;
 			
-			// aapt resource value: 0x7f0b0033
-			public const int logout = 2131427379;
+			// aapt resource value: 0x7f0b001c
+			public const int media_actions = 2131427356;
 			
-			// aapt resource value: 0x7f0b001b
-			public const int media_actions = 2131427355;
-			
-			// aapt resource value: 0x7f0b002b
-			public const int messages = 2131427371;
+			// aapt resource value: 0x7f0b002c
+			public const int messages = 2131427372;
 			
 			// aapt resource value: 0x7f0b000a
 			public const int normal = 2131427338;
 			
-			// aapt resource value: 0x7f0b0025
-			public const int notification_background = 2131427365;
+			// aapt resource value: 0x7f0b0026
+			public const int notification_background = 2131427366;
+			
+			// aapt resource value: 0x7f0b001f
+			public const int notification_main_column = 2131427359;
 			
 			// aapt resource value: 0x7f0b001e
-			public const int notification_main_column = 2131427358;
+			public const int notification_main_column_container = 2131427358;
 			
-			// aapt resource value: 0x7f0b001d
-			public const int notification_main_column_container = 2131427357;
-			
-			// aapt resource value: 0x7f0b002a
-			public const int pagecount = 2131427370;
+			// aapt resource value: 0x7f0b002b
+			public const int pagecount = 2131427371;
 			
 			// aapt resource value: 0x7f0b000b
 			public const int progress = 2131427339;
 			
-			// aapt resource value: 0x7f0b0029
-			public const int queues = 2131427369;
+			// aapt resource value: 0x7f0b002a
+			public const int queues = 2131427370;
 			
 			// aapt resource value: 0x7f0b000f
 			public const int refresher = 2131427343;
 			
-			// aapt resource value: 0x7f0b0024
-			public const int right_icon = 2131427364;
+			// aapt resource value: 0x7f0b0025
+			public const int right_icon = 2131427365;
 			
-			// aapt resource value: 0x7f0b001f
-			public const int right_side = 2131427359;
+			// aapt resource value: 0x7f0b0020
+			public const int right_side = 2131427360;
 			
-			// aapt resource value: 0x7f0b001a
-			public const int status_bar_latest_event_content = 2131427354;
+			// aapt resource value: 0x7f0b0013
+			public const int splash = 2131427347;
 			
-			// aapt resource value: 0x7f0b002f
-			public const int subscriptionname = 2131427375;
+			// aapt resource value: 0x7f0b001b
+			public const int status_bar_latest_event_content = 2131427355;
+			
+			// aapt resource value: 0x7f0b0030
+			public const int subscriptionname = 2131427376;
 			
 			// aapt resource value: 0x7f0b000d
 			public const int subscriptions = 2131427341;
 			
-			// aapt resource value: 0x7f0b0031
-			public const int tablelayout = 2131427377;
+			// aapt resource value: 0x7f0b0032
+			public const int tablelayout = 2131427378;
 			
-			// aapt resource value: 0x7f0b0030
-			public const int tables = 2131427376;
+			// aapt resource value: 0x7f0b0031
+			public const int tables = 2131427377;
 			
 			// aapt resource value: 0x7f0b0002
 			public const int tag_transition_group = 2131427330;
@@ -403,8 +406,8 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f0b0004
 			public const int text2 = 2131427332;
 			
-			// aapt resource value: 0x7f0b0020
-			public const int time = 2131427360;
+			// aapt resource value: 0x7f0b0021
+			public const int time = 2131427361;
 			
 			// aapt resource value: 0x7f0b0005
 			public const int title = 2131427333;
