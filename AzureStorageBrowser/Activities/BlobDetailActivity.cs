@@ -56,10 +56,10 @@ namespace AzureStorageBrowser.Activities
             blobsListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
             {
                 if (blobs.Any() == false) { return; }
+                var blob = blobs.ElementAtOrDefault(e.Position);
+                if (await blob?.ExistsAsync() != true) { return; }
 
                 Analytics.TrackEvent("blobdetail-blob-clicked");
-
-                var blob = blobs.ElementAt(e.Position);
 
                 if (blob.IsImage())
                 {
