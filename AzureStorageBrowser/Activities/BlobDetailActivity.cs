@@ -23,7 +23,6 @@ namespace AzureStorageBrowser.Activities
         TextView textView;
         ProgressBar progressBar;
         ListView blobsListView;
-        TextView emptyMessage;
         CloudBlobContainer container;
         CloudBlockBlob[] blobs;
 
@@ -41,7 +40,6 @@ namespace AzureStorageBrowser.Activities
             textView = FindViewById<TextView>(Resource.Id.blobTextView);
             progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
             blobsListView = FindViewById<ListView>(Resource.Id.blobs);
-            emptyMessage = FindViewById<TextView>(Resource.Id.empty);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var containerName = await BlobCache.LocalMachine.GetObject<string>("selectedContainer");
@@ -57,6 +55,8 @@ namespace AzureStorageBrowser.Activities
 
             blobsListView.ItemClick += async delegate (object sender, AdapterView.ItemClickEventArgs e)
             {
+                if (blobs.Any() == false) { return; }
+
                 Analytics.TrackEvent("blobdetail-blob-clicked");
 
                 var blob = blobs.ElementAt(e.Position);
@@ -101,26 +101,24 @@ namespace AzureStorageBrowser.Activities
 
         private async Task LoadBlobs()
         {
-            emptyMessage.Visibility = ViewStates.Gone;
             progressBar.Visibility = ViewStates.Visible;
 
             blobs = (await container.ListBlobsSegmentedAsync(null))
                 .Results.OfType<CloudBlockBlob>()
                 .ToArray();
 
+            var displayBlobNames = blobs.Select(x => x.Name).ToArray();
+
             progressBar.Visibility = ViewStates.Gone;
 
             if (blobs.Any() == false)
             {
-                emptyMessage.Visibility = ViewStates.Visible;
+                displayBlobNames = new[] { "    ~~  No blobs  ~~    " };
             }
-            else
-            {
-                blobsListView.Adapter = new ArrayAdapter<string>(
-                this,
-                Android.Resource.Layout.SimpleListItem1,
-                blobs.Select(x => x.Name).ToArray());
-            }
+
+            blobsListView.Adapter = new ArrayAdapter<string>(this,
+                                                             Android.Resource.Layout.SimpleListItem1,
+                                                             displayBlobNames);
         }
 
         private string ShittyPrettyPrint(string text)

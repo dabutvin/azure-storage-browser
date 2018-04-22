@@ -23,7 +23,6 @@ namespace AzureStorageBrowser.Activities
         ProgressBar progressBar;
         TextView pageCount;
         ListView messagesListView;
-        TextView emptyMessage;
         CloudQueue queue;
         CloudQueueMessage[] messages;
         CloudQueueClient queueClient;
@@ -41,7 +40,6 @@ namespace AzureStorageBrowser.Activities
             progressBar = FindViewById<ProgressBar>(Resource.Id.progress);
             pageCount = FindViewById<TextView>(Resource.Id.pagecount);
             messagesListView = FindViewById<ListView>(Resource.Id.messages);
-            emptyMessage = FindViewById<TextView>(Resource.Id.empty);
 
             var account = await BlobCache.LocalMachine.GetObject<Account>("selectedAccount");
             var queueName = await BlobCache.LocalMachine.GetObject<string>("selectedQueue");
@@ -69,23 +67,10 @@ namespace AzureStorageBrowser.Activities
 
         private async Task LoadQueueDetails()
         {
-            emptyMessage.Visibility = Android.Views.ViewStates.Gone;
-            progressBar.Visibility = Android.Views.ViewStates.Visible;
+            progressBar.Visibility = ViewStates.Visible;
 
             await queue.FetchAttributesAsync();
             messages = (await queue.PeekMessagesAsync(32)).ToArray();
-
-            progressBar.Visibility = Android.Views.ViewStates.Gone;
-
-            if (messages.Any() == false)
-            {
-                emptyMessage.Visibility = Android.Views.ViewStates.Visible;
-                pageCount.Text = "0 / 0";
-            }
-            else
-            {
-                pageCount.Text = $"{messages.Count()} / {queue.ApproximateMessageCount}";
-            }
 
             Analytics.TrackEvent(
                 "queuedetail-messages-fetched",
@@ -102,6 +87,18 @@ namespace AzureStorageBrowser.Activities
                     return "[ERROR] Unable to read message";
                 }
             }).ToArray();
+
+            progressBar.Visibility = ViewStates.Gone;
+
+            if (displayMessages.Any() == false)
+            {
+                pageCount.Text = "0 / 0";
+                displayMessages = new[] { "    ~~  No messages  ~~    " };
+            }
+            else
+            {
+                pageCount.Text = $"{messages.Count()} / {queue.ApproximateMessageCount}";
+            }
 
             messagesListView.Adapter = new ArrayAdapter<string>(this,
                                                                 Android.Resource.Layout.SimpleListItem1,

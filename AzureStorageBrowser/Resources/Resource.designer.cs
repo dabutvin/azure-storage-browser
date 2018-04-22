@@ -277,11 +277,11 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f0b0006
 			public const int async = 2131427334;
 			
-			// aapt resource value: 0x7f0b0010
-			public const int blobImageView = 2131427344;
+			// aapt resource value: 0x7f0b000f
+			public const int blobImageView = 2131427343;
 			
-			// aapt resource value: 0x7f0b0011
-			public const int blobTextView = 2131427345;
+			// aapt resource value: 0x7f0b0010
+			public const int blobTextView = 2131427344;
 			
 			// aapt resource value: 0x7f0b0012
 			public const int blobs = 2131427346;
@@ -370,8 +370,8 @@ namespace AzureStorageBrowser
 			// aapt resource value: 0x7f0b002a
 			public const int queues = 2131427370;
 			
-			// aapt resource value: 0x7f0b000f
-			public const int refresher = 2131427343;
+			// aapt resource value: 0x7f0b0011
+			public const int refresher = 2131427345;
 			
 			// aapt resource value: 0x7f0b0025
 			public const int right_icon = 2131427365;
