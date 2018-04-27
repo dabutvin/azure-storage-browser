@@ -17,7 +17,22 @@ app.get('/api/subscriptions', (req, res) => {
     res.json({
         subscriptions: [
         {
+            id: '12345',
             name: 'Ultimate'
+        },
+        {
+            id: '67890',
+            name: 'Mock'
+        }]
+    });
+});
+
+app.get('/api/accounts/:subscriptionid', (req, res) => {
+    res.json({
+        accounts: [
+        {
+            id: '1231231' + req.params.subscriptionid,
+            name: 'ford: ' + req.params.subscriptionid
         }]
     });
 });
