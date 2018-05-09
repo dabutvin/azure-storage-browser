@@ -4,6 +4,11 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "express": "^4.16.2"
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.2",
+    "jsonwebtoken": "^8.2.1",
+    "request": "^2.85.0",
+    "uuid": "^3.2.1"
   }
 }
