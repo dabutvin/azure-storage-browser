@@ -8,7 +8,9 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const request = require('request');
 
-const client_id = '94e776f0-1861-4e75-a7dc-bbad87906169';
+const secrets = require('./secrets');
+
+const client_id = '46f5f6ef-c1dc-40bd-9aa8-1e044c067ab4';
 const redirect_uri = 'http%3a%2f%2flocalhost:3000%2fapp%2f';
 
 var keys = [];
@@ -33,7 +35,10 @@ app.get('/app', (req, res) => {
         res.cookie('nonce', nonce, {expire: new Date(), httpOnly: true });
 
         res.redirect('https://login.microsoftonline.com/common/oauth2/authorize?client_id=' + client_id +
-            '&response_mode=form_post&response_type=id_token+code&scope=openid%2cemail%2cprofile&redirect_uri=' + redirect_uri +
+            '&response_mode=form_post&response_type=id_token+code' +
+            '&scope=openid%2cemail%2cprofile' +
+            '&redirect_uri=' + redirect_uri +
+            '&resource=https%3A%2F%2Fmanagement.azure.com%2F' +
             '&post_logout_redirect_uri=' + redirect_uri +
             '&nonce=' + nonce);
     }
@@ -43,6 +48,7 @@ app.post('/app', urlencodedParser, (req, res) => {
     if (!req.body) return res.sendStatus(400);
 
     const rawToken = req.body.id_token;
+    const rawCode = req.body.code;
 
     var decodedNotVerified = jwt.decode(rawToken, {complete: true});
     fetchCert(decodedNotVerified.header.kid, (cert) => {
@@ -62,15 +68,39 @@ app.post('/app', urlencodedParser, (req, res) => {
                 return res.sendStatus(400);
             }
 
-            // TODO: Make this cookie https only
-            res.cookie('token', rawToken, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
+            // now that the token is validated - use the 'code' to get a token that we can use for azure mgmt
+            fetchMgmtToken(rawCode, (mgmtToken) => {
 
-            res.sendFile(__dirname + '/app.html');
+                 // TODO: Make this cookie https only
+                res.cookie('token', mgmtToken, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
+
+                res.sendFile(__dirname + '/app.html');
+            });
         });
     });
-
-
 });
+
+app.get('/api/test', (req, res) => {
+    fetchSubscriptions(req.cookies['token'], (data) => {
+        res.json(data);
+    });
+});
+
+function fetchSubscriptions(token, callback) {
+    request({
+        url: 'https://management.azure.com/subscriptions?api-version=2015-01-01',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    }, (err, res, body) => {
+        if(err) {
+            console.log(err);
+            callback(err);
+        }
+
+        callback(res.body);
+    });
+}
 
 app.get('/api/subscriptions', (req, res) => {
 
@@ -100,6 +130,27 @@ app.get('/api/accounts/:subscriptionid', (req, res) => {
 app.listen(process.env.PORT || 3000, () => {
     console.log('listening on port ' + (process.env.PORT || 3000));
 });
+
+function fetchMgmtToken(code, callback) {
+    request.post({
+        url: 'https://login.microsoftonline.com/common/oauth2/token',
+        form: {
+            client_id: client_id,
+            scope: 'https://management.azure.com/read',
+            code: code,
+            redirect_uri: 'http://localhost:3000/app/',
+            grant_type: 'authorization_code',
+            client_secret: secrets.client_secret
+        }
+    }, (err, res, body) => {
+        if(err) {
+            console.log(err);
+            callback(err);
+        }
+
+        callback(JSON.parse(body).access_token);
+    });
+}
 
 function fetchCert(kid, callback) {
     if (keys.length === 0) {
