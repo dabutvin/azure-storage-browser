@@ -15,6 +15,8 @@ const redirect_uri = 'http%3a%2f%2flocalhost:3000%2fapp%2f';
 app.use(cookieParser());
 app.use(express.static('public'));
 
+// TODO app.use(tokenRefresh);
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
@@ -113,6 +115,16 @@ app.get('/api/accounts/:subscriptionid', (req, res) => {
             accounts: accounts
         });
     });
+});
+
+app.get('/api/key', (req, res) => {
+    azureapi.fetchStorageKey(req.cookies['token'], req.query.id, (data) => {
+        var key = data.keys[0].value;
+
+        res.json({
+            key: key
+        });
+    })
 });
 
 app.listen(process.env.PORT || 3000, () => {

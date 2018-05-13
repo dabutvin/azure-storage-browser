@@ -33,3 +33,19 @@ exports.fetchStorageResources = function (token, subscriptionId, callback) {
         callback(JSON.parse(body));
     });
 };
+
+exports.fetchStorageKey = function (token, id, callback) {
+    request.post({
+        url: 'https://management.azure.com' + id + '/listKeys?api-version=2017-06-01',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    }, (err, res, body) => {
+        if (err) {
+            console.log(err);
+            callback(err);
+        }
+
+        callback(JSON.parse(body));
+    })
+};
