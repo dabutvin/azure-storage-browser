@@ -78,33 +78,40 @@ app.post('/app', urlencodedParser, (req, res) => {
 });
 
 app.get('/api/test', (req, res) => {
-    azureapi.fetchSubscriptions(req.cookies['token'], (data) => {
+    azureapi.fetchStorageResources(req.cookies['token'], 'eas3d14-e16a-49da-9141-e522cf579e7a', (data) => {
         res.json(data);
     });
 });
 
 app.get('/api/subscriptions', (req, res) => {
+    azureapi.fetchSubscriptions(req.cookies['token'], (data) => {
 
-    res.json({
-        subscriptions: [
-        {
-            id: '12345',
-            name: 'Ultimate'
-        },
-        {
-            id: '67890',
-            name: 'Mock'
-        }]
+        var subscriptions = data.value.map(sub => {
+            return {
+                id: sub.subscriptionId,
+                name: sub.displayName
+            };
+        });
+
+        res.json({
+            subscriptions: subscriptions
+        });
     });
 });
 
 app.get('/api/accounts/:subscriptionid', (req, res) => {
-    res.json({
-        accounts: [
-        {
-            id: '1231231' + req.params.subscriptionid,
-            name: 'ford: ' + req.params.subscriptionid
-        }]
+
+    azureapi.fetchStorageResources(req.cookies['token'], req.params.subscriptionid, (data) => {
+        var accounts = data.value.map(account => {
+            return {
+                id: account.id,
+                name: account.name
+            };
+        });
+
+        res.json({
+            accounts: accounts
+        });
     });
 });
 
