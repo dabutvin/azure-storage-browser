@@ -2,11 +2,26 @@
 <html>
 <head>
     <title>Azure Storage Browser</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+        .account-list {
+            padding: 0;
+        }
+    </style>
 </head>
 <body>
 
+    <nav class="teal lighten-1" role="navigation">
+        <div class="nav-wrapper container">
+            <a href="/app" class="brand-logo">Accounts</a>
+        </div>
+    </nav>
+
     <div id="app">
-        <ul>
+        <ul id="subscription-list" class="collapsible" data-collapsible="accordion">
             <subscription
                 v-for="subscription in subscriptions"
                 v-bind:key="subscription.id"
@@ -15,7 +30,6 @@
             ></subscription>
         </ul>
     </div>
-
 
     <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
 
@@ -26,5 +40,15 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
 
     <script src="/app/main.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var collapsibles = document.querySelectorAll('.collapsible');
+            var instances = M.Collapsible.init(collapsibles);
+        });
+    </script>
 </body>
 </html>

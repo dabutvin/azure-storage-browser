@@ -2,7 +2,6 @@ Vue.component('account', {
     props: ['name', 'id'],
     data: function () {
         return {
-            name: '',
             key: ''
         }
     },
@@ -17,9 +16,31 @@ Vue.component('account', {
                 console.log(error);
             });
     },
+    methods: {
+        table: function (event) {
+            alert('table ' + this.key)
+        },
+        queue: function (event) {
+            alert('queue ' + this.key)
+        },
+        blob: function (event) {
+            alert('blob ' + this.key)
+        }
+    },
     template: `
-            <li>
-                {{ name }}
+            <li class="collection-item">
+                <div>
+                    {{ name }}
+                    <button v-on:click="table" class="secondary-content">
+                        <i class="material-icons">table_chart</i>
+                    </button>
+                    <button v-on:click="queue" class="secondary-content">
+                        <i class="material-icons">merge_type</i>
+                    </button>
+                    <button v-on:click="blob" class="secondary-content">
+                        <i class="material-icons">folder_open</i>
+                    </button>
+                </div>
             </li>
     `
 });
@@ -46,8 +67,10 @@ Vue.component('subscription', {
     },
     template: `
             <li>
-                {{ name }}
-                <ul>
+                <div class="collapsible-header">
+                    {{ name }}
+                </div>
+                <ul class="collection collapsible-body account-list">
                     <account
                         v-for="account in accounts"
                         v-bind:key="account.id"
