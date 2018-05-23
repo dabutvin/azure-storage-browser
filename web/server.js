@@ -15,7 +15,7 @@ const redirect_uri = 'http%3a%2f%2flocalhost:3000%2fapp%2f';
 app.use(cookieParser());
 app.use(express.static('public'));
 
-// TODO app.use(tokenRefresh);
+app.use(tokenRefresh);
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 
 app.get('/app', (req, res) => {
 
-    var existingToken = req.cookies['token'];
+    var existingToken = req.cookies['access_token'];
     if(existingToken && existingToken.length > 0) {
         res.sendFile(__dirname + '/app.html');
     } else {
@@ -68,10 +68,12 @@ app.post('/app', urlencodedParser, (req, res) => {
             }
 
             // now that the token is validated - use the 'code' to get a token that we can use for azure mgmt
-            auth.fetchMgmtToken(rawCode, (mgmtToken) => {
+            auth.fetchMgmtTokens(rawCode, (mgmtTokens) => {
 
-                 // TODO: Make this cookie https only
-                res.cookie('token', mgmtToken, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
+                 // TODO: Make these cookies https only
+                 // TODO: figure out how to expire based on expires_in / expires_on
+                res.cookie('access_token', mgmtTokens.access_token, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
+                res.cookie('refresh_token', mgmtTokens.refresh_token, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
 
                 res.sendFile(__dirname + '/app.html');
             });
@@ -80,13 +82,13 @@ app.post('/app', urlencodedParser, (req, res) => {
 });
 
 app.get('/api/test', (req, res) => {
-    azureapi.fetchStorageResources(req.cookies['token'], 'eas3d14-e16a-49da-9141-e522cf579e7a', (data) => {
+    azureapi.fetchStorageResources(req.cookies['access_token'], 'eas3d14-e16a-49da-9141-e522cf579e7a', (data) => {
         res.json(data);
     });
 });
 
 app.get('/api/subscriptions', (req, res) => {
-    azureapi.fetchSubscriptions(req.cookies['token'], (data) => {
+    azureapi.fetchSubscriptions(req.cookies['access_token'], (data) => {
 
         var subscriptions = data.value.map(sub => {
             return {
@@ -103,7 +105,7 @@ app.get('/api/subscriptions', (req, res) => {
 
 app.get('/api/accounts/:subscriptionid', (req, res) => {
 
-    azureapi.fetchStorageResources(req.cookies['token'], req.params.subscriptionid, (data) => {
+    azureapi.fetchStorageResources(req.cookies['access_token'], req.params.subscriptionid, (data) => {
         var accounts = data.value.map(account => {
             return {
                 id: account.id,
@@ -118,7 +120,7 @@ app.get('/api/accounts/:subscriptionid', (req, res) => {
 });
 
 app.get('/api/key', (req, res) => {
-    azureapi.fetchStorageKey(req.cookies['token'], req.query.id, (data) => {
+    azureapi.fetchStorageKey(req.cookies['access_token'], req.query.id, (data) => {
         var key = data.keys[0].value;
 
         res.json({
@@ -130,3 +132,29 @@ app.get('/api/key', (req, res) => {
 app.listen(process.env.PORT || 3000, () => {
     console.log('listening on port ' + (process.env.PORT || 3000));
 });
+
+function tokenRefresh (req, res, next) {
+    var cookie_access_token = req.cookies['access_token'];
+    var cookie_refresh_token = req.cookies['refresh_token'];
+
+    if (cookie_access_token) {
+        var decodedAccessToken = jwt.decode(cookie_access_token, {complete: true});
+
+        // TODO: check exp claim of access_token to know whether to refresh
+        if (cookie_refresh_token) {
+            auth.refreshMgmtTokens(cookie_refresh_token, (mgmtTokens) => {
+                 // TODO: share this cookie set code
+                 if (mgmtTokens.access_token) {
+                    console.log('successfully refreshed access_token');
+                    res.cookie('access_token', mgmtTokens.access_token, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
+                 }
+
+                if (mgmtTokens.refresh_token) {
+                    res.cookie('refresh_token', mgmtTokens.refresh_token, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
+                }
+            });
+        }
+    }
+
+    next();
+}
