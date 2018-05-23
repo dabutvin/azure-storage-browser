@@ -1,5 +1,10 @@
 <template>
     <div id="app">
+        <nav class="teal lighten-1" role="navigation">
+            <div class="nav-wrapper container">
+                <a href="/app" class="brand-logo">Accounts</a>
+            </div>
+        </nav>
         <ul id="subscription-list" class="collapsible" data-collapsible="accordion">
             <subscription
                 v-for="subscription in subscriptions"

@@ -13,9 +13,8 @@ const azureapi = require('./azureapi');
 const redirect_uri = 'http%3a%2f%2flocalhost:3000%2fapp%2f';
 
 app.use(cookieParser());
-app.use(express.static('public'));
-
 app.use(tokenRefresh);
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -45,6 +44,7 @@ app.get('/app', (req, res) => {
 
 app.post('/app', urlencodedParser, (req, res) => {
     if (!req.body) return res.sendStatus(400);
+    if (req.cookies['access_token']) return res.sendStatus(201);
 
     const rawToken = req.body.id_token;
     const rawCode = req.body.code;
@@ -69,13 +69,8 @@ app.post('/app', urlencodedParser, (req, res) => {
 
             // now that the token is validated - use the 'code' to get a token that we can use for azure mgmt
             auth.fetchMgmtTokens(rawCode, (mgmtTokens) => {
-
-                 // TODO: Make these cookies https only
-                 // TODO: figure out how to expire based on expires_in / expires_on
-                res.cookie('access_token', mgmtTokens.access_token, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
-                res.cookie('refresh_token', mgmtTokens.refresh_token, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
-
-                res.sendFile(__dirname + '/app.html');
+                saveTokens(res, mgmtTokens);
+                res.redirect('/app');
             });
         });
     });
@@ -104,7 +99,6 @@ app.get('/api/subscriptions', (req, res) => {
 });
 
 app.get('/api/accounts/:subscriptionid', (req, res) => {
-
     azureapi.fetchStorageResources(req.cookies['access_token'], req.params.subscriptionid, (data) => {
         var accounts = data.value.map(account => {
             return {
@@ -140,21 +134,32 @@ function tokenRefresh (req, res, next) {
     if (cookie_access_token) {
         var decodedAccessToken = jwt.decode(cookie_access_token, {complete: true});
 
-        // TODO: check exp claim of access_token to know whether to refresh
-        if (cookie_refresh_token) {
+        if (cookie_refresh_token && decodedAccessToken.payload.exp < Date.now() / 1000) {
             auth.refreshMgmtTokens(cookie_refresh_token, (mgmtTokens) => {
-                 // TODO: share this cookie set code
-                 if (mgmtTokens.access_token) {
-                    console.log('successfully refreshed access_token');
-                    res.cookie('access_token', mgmtTokens.access_token, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
-                 }
-
-                if (mgmtTokens.refresh_token) {
-                    res.cookie('refresh_token', mgmtTokens.refresh_token, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
-                }
+                 saveTokens(res, mgmtTokens);
+                 next();
             });
+        } else {
+            next();
         }
+    } else {
+        next();
     }
+}
 
-    next();
+function saveTokens (res, mgmtTokens) {
+    if (!mgmtTokens) return;
+
+    // TODO: Make these cookies https only
+    // TODO: figure out how to expire based on expires_in / expires_on
+
+    if (mgmtTokens.access_token) {
+        console.log('successfully updated access_token');
+        res.cookie('access_token', mgmtTokens.access_token, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
+     }
+
+    if (mgmtTokens.refresh_token) {
+        console.log('successfully updated refresh_token');
+        res.cookie('refresh_token', mgmtTokens.refresh_token, {expire: new Date((new Date()).getTime() + 60*60*1000), httpOnly: true });
+    }
 }
